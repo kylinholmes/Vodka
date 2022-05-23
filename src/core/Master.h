@@ -9,6 +9,7 @@ const int WORKER_PORCESS_COUNT = 8;
 
 class Master {
 	  public:
+	  	Master():listen_port(80){};
 		void Run();
 		void endMaster();
 
@@ -18,6 +19,7 @@ class Master {
 
 	  private:
 		int				   server_sock;
+		int				   listen_port;
 		Uringer			   uring;
 		EventPackage	   event_for_accept;
 		struct sockaddr_in client_addr;

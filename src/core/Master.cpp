@@ -15,7 +15,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 
-#include "Config.h"
+
 #include "Master.h"
 #include "Common.h"
 #include "log.h"
@@ -40,9 +40,7 @@ void master_sigint_handler(int signo) {
 }
 
 void Master::Run(){
-    
-    auto port = Config::GetInstance()->port;
-
+    auto port = listen_port;
     // fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","\033[1H\033[2J", LOGO);
     fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","", LOGO);
     server_sock = createServerSocket(port);
