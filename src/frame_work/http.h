@@ -43,18 +43,7 @@ struct Response {
     std::string status_message;
     std::unordered_map<std::string, std::string> headers;
     std::string body;
-    // char* __body__;
 };  // struct Response
 
-enum struct Method {
-    ANY,
-    GET,
-    POST,
-    HEAD,
-    PUT,
-    DELETE,
-    CONNECT,
-    OPTIONS,
-    TARCE
-};
+
 }  // namespace HTTP

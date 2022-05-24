@@ -15,37 +15,37 @@
 
 #include "Worker.h"
 
-void Worker::loopWorker() {
+void Worker::Loop() {
     EventPackage *event, *temp;
     while (1) {
-        event = uring.waitEvent();
+        event = uring.WaitEvent();
         switch (event->m_eventType) {
             case EVENT_TYPE_RECVMSG:
                 if (event->m_res == 0 || event->m_res == -1)
                     exit(1);
-                if ((temp = eventPool.getObject()) == nullptr)
+                if ((temp = eventPool.GetObject()) == nullptr)
                     exit(1);
                 temp->m_fd = event->m_res;
                 temp->m_eventType = EVENT_TYPE_READ;
-                uring.addRead(temp, temp->m_fd);
-                uring.addRecvSocketFd(&event_for_recvmsg, m_handle.pipefd);
+                uring.AddRead(temp, temp->m_fd);
+                uring.AddRecvSocketFd(&event_for_recvmsg, m_handle.pipefd);
                 break;
             case EVENT_TYPE_READ:
                 if (event->m_res == 0) {
                     close(event->m_fd);
-                    eventPool.freeObject(event);
+                    eventPool.FreeObject(event);
                     // fprintf(stderr, "Empty request!\n");
                     continue;
                 }
-                completeEvent(event);
+                CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITE:
                 event->m_eventType = EVENT_TYPE_END;
-                completeEvent(event);
+                CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITEV:
                 event->m_eventType = EVENT_TYPE_END;
-                completeEvent(event);
+                CompleteEvent(event);
                 break;
             default:
                 exit(1);
@@ -53,21 +53,21 @@ void Worker::loopWorker() {
     }
 }
 
-void Worker::completeEvent(EventPackage* event) {
-    processEvent(event);
+void Worker::CompleteEvent(EventPackage* event) {
+    ProcessEvent(event);
     switch (event->m_eventType) {
         case EVENT_TYPE_READ:
-            uring.addRead(event, event->m_fd);
+            uring.AddRead(event, event->m_fd);
             break;
         case EVENT_TYPE_WRITE:
             uring.addWrite(event, event->m_fd, event->m_buffer, event->len);
             break;
         case EVENT_TYPE_WRITEV:
-            uring.addWritev(event, event->m_fd, event->ioves, event->iovec_cnt);
+            uring.AddWritev(event, event->m_fd, event->ioves, event->iovec_cnt);
             break;
         case EVENT_TYPE_END:
             close(event->m_fd);
-            eventPool.freeObject(event);
+            eventPool.FreeObject(event);
             break;
         default:
             break;
@@ -77,22 +77,22 @@ void Worker::completeEvent(EventPackage* event) {
 Worker* worker_instance;
 void worker_sigint_handler(int signo) {
     printf("Worker:^C pressed. Shutting down.\n");
-    worker_instance->endWorker();
+    worker_instance->End();
     exit(0);
 }
 
-void Worker::initWorkerAsChild(ProcessHandle handle) {
+void Worker::Init(ProcessHandle handle) {
     worker_instance = this;
     signal(SIGKILL, worker_sigint_handler);
-    onInitWorker();
-    uring.initUring();
+    // onInitWorker();
+    uring.InitUring();
     m_handle = handle;
-    eventPool.initPool();
-    uring.addRecvSocketFd(&event_for_recvmsg, m_handle.pipefd);
+    eventPool.Init();
+    uring.AddRecvSocketFd(&event_for_recvmsg, m_handle.pipefd);
 }
 
-void Worker::endWorker() {
-    onEndWorker();
-    uring.endUring();
-    eventPool.endPool();
+void Worker::End() {
+    // onEndWorker();
+    uring.End();
+    eventPool.End();
 }

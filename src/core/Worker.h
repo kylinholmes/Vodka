@@ -10,32 +10,29 @@
 
 class Worker{
 public:
-    // void initWorkerAsMaster(int sock);
+    void Init(ProcessHandle handle);
 
-    void initWorkerAsChild(ProcessHandle handle);
+    void End();
 
-    void endWorker();
-
-    void loopWorker();
+    void Loop();
 
 private:
-
-    void completeEvent(EventPackage* event);
+    void CompleteEvent(EventPackage* event);
 
 private:
     int server_sock;
     Uring uring;
-    EventPackage event_for_accept,event_for_recvmsg;
+    EventPackage event_for_accept, event_for_recvmsg;
     EventPackagePool eventPool;
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
     ProcessHandle m_handle;
 };
 
-void processEvent(EventPackage* event);
+void ProcessEvent(EventPackage* event);
 
-void onInitWorker();
+// void onInitWorker();
 
-void onEndWorker();
+// void onEndWorker();
 
 #endif

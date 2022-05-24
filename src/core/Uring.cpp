@@ -13,7 +13,7 @@ struct MsgPackage{
     cmsghdr cm;
 };
 
-EventPackage* Uring::waitEvent(){
+EventPackage* Uring::WaitEvent(){
     int ret = io_uring_wait_cqe(&ring, &cqe);
     EventPackage *event = (EventPackage *)cqe->user_data;
     if (ret < 0) {
@@ -39,7 +39,7 @@ EventPackage* Uring::waitEvent(){
     return event;
 }
 
-int Uring::addAccept(EventPackage* event,int sock,
+int Uring::AddAccept(EventPackage* event,int sock,
         struct sockaddr_in *client_addr,
         socklen_t *client_addr_len){
     event->m_fd=sock;
@@ -52,7 +52,7 @@ int Uring::addAccept(EventPackage* event,int sock,
     return 0;
 }
 
-int Uring::addRead(EventPackage* event,int sock){
+int Uring::AddRead(EventPackage* event,int sock){
     event->m_fd=sock;
     event->m_eventType=EVENT_TYPE_READ;
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
@@ -73,7 +73,7 @@ int Uring::addWrite(EventPackage* event,int sock,char* buf,int len){
     return 0;
 }
 
-int Uring::addWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt){
+int Uring::AddWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt){
     event->m_fd = sock;
     event->m_eventType = EVENT_TYPE_WRITEV;
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
@@ -84,7 +84,7 @@ int Uring::addWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt){
 }
 
 
-int Uring::addRecvSocketFd(EventPackage* event,int fd){
+int Uring::AddRecvSocketFd(EventPackage* event,int fd){
     if((char*)event->m_buffer == nullptr)return -1;
     MsgPackage *msgPkg = (MsgPackage *)event->m_buffer;
 
@@ -110,10 +110,10 @@ int Uring::addRecvSocketFd(EventPackage* event,int fd){
     return 0;
 }
 
-void Uring::initUring(){
+void Uring::InitUring(){
     io_uring_queue_init(128, &ring, 0);
 }
 
-void Uring::endUring(){
+void Uring::End(){
     io_uring_queue_exit(&ring);
 }

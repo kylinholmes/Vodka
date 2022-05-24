@@ -11,11 +11,11 @@ class Master {
 	  public:
 	  	Master():listen_port(8080){};
 		void Run();
-		void endMaster();
+		void End();
 
 	  private:
-		void loop();
-		int	 rebootWorker(pid_t pid);
+		void Loop();
+		int	 RebootWorker(pid_t pid);
 
 	  private:
 		int				   server_sock;

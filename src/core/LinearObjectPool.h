@@ -9,27 +9,27 @@
 template<typename T,int max_len>
 class LinearObjectPool{
 public:
-    int initPool(){
+    int Init(){
         m_nowSize=0;
         for(int i = 0;i<max_len;i++){
-            freeObject(new T());
+            FreeObject(new T());
         }
         return 0;
     }
 
-    void endPool(){
+    void End(){
         for(int i = 0;i<m_nowSize;i++){
             delete m_pool[i];
         }
     }
 
-    T* getObject(){
+    T* GetObject(){
         if(m_nowSize <= 0)return nullptr;
         m_nowSize--;
         return m_pool[m_nowSize];
     }
 
-    int freeObject(T* obj){
+    int FreeObject(T* obj){
         if(m_nowSize>=max_len)return -1;
         m_pool[m_nowSize] = obj;
         m_nowSize++;

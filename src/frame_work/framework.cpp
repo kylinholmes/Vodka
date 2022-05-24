@@ -14,7 +14,7 @@ void FrameWorkMain(EventPackage *event) {
   ctx.WriteEvent();
 }
 
-void processEvent(EventPackage *event) {
+void ProcessEvent(EventPackage *event) {
   switch (event->m_eventType) {
   case EVENT_TYPE_READ:
     event->user_data = 0;
@@ -26,6 +26,6 @@ void processEvent(EventPackage *event) {
   }
 }
 
-void onInitWorker() {}
+// void onInitWorker() {}
 
-void onEndWorker() {}
+// void onEndWorker() {}

@@ -9,25 +9,23 @@
 class Uring
 {
 public:
-    void initUring();
+    void InitUring();
 
-    void endUring();
+    void End();
 
-    int addAccept(EventPackage* event,int sock,
+    int AddAccept(EventPackage* event,int sock,
         struct sockaddr_in *client_addr,
         socklen_t *client_addr_len);
 
-    int addRead(EventPackage* event,int sock);
+    int AddRead(EventPackage* event,int sock);
 
     int addWrite(EventPackage* event,int sock,char* buf,int len);
 
-    int addWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt);
+    int AddWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt);
 
-    //int addSendSocketFd(EventPackage* event,int fd,int sock_fd);
+    int AddRecvSocketFd(EventPackage* event,int fd);
 
-    int addRecvSocketFd(EventPackage* event,int fd);
-
-    EventPackage* waitEvent();
+    EventPackage* WaitEvent();
     
 private:
    struct io_uring ring;

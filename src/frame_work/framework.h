@@ -7,7 +7,7 @@
 // #include "dllLoader.hpp"
 
 
-void processEvent(EventPackage* event);
+void ProcessEvent(EventPackage* event);
 
 void FrameWorkMain(EventPackage* event);
 

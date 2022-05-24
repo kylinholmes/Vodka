@@ -35,7 +35,7 @@ const char* LOGO = R"(
 Master *master_instance;
 void master_sigint_handler(int signo) {
     printf("Master ^C pressed. Shutting down.\n");
-    master_instance->endMaster();
+    master_instance->End();
     exit(0);
 }
 
@@ -46,7 +46,7 @@ void Master::Run(){
     server_sock = createServerSocket(port);
     Info("🚀 Start on http://localhost:{}\n", port);
     
-    uring.initUring();
+    uring.InitUring();
 
     int id = 0,pipefd[2];
     for(id = 0;id<WORKER_PORCESS_COUNT;id++){
@@ -65,33 +65,33 @@ void Master::Run(){
     
     if(id!=WORKER_PORCESS_COUNT){
         Worker worker;
-        worker.initWorkerAsChild(childHandle[id]);
-        worker.loopWorker();
+        worker.Init(childHandle[id]);
+        worker.Loop();
     }
     else {
         master_instance = this;
         signal(SIGKILL, master_sigint_handler);
-        uring.addAccept(&event_for_accept,server_sock,
+        uring.AddAccept(&event_for_accept,server_sock,
             &client_addr,&client_addr_len);
-        loop();
+        Loop();
     }
 }
 
-void Master::loop(){
+void Master::Loop(){
     EventPackage *event;
     int sockFd,sele,stat,id;
     pid_t wpid;
     while (1){
         wpid =waitpid(-1, &stat,WNOHANG);
         if(wpid!=0 && wpid!=-1){//此时有worker异常退出
-            id = rebootWorker(wpid);
+            id = RebootWorker(wpid);
             if(id != -1)break;
         }
-        event = uring.waitEvent();
+        event = uring.WaitEvent();
         switch (event->m_eventType) {
         case EVENT_TYPE_ACCEPT:
             sockFd = event->m_res;
-            uring.addAccept(&event_for_accept,server_sock,
+            uring.AddAccept(&event_for_accept,server_sock,
                 &client_addr,&client_addr_len);
             sele = rand()%WORKER_PORCESS_COUNT;
             send_fd(childHandle[sele].pipefd,sockFd);
@@ -103,19 +103,19 @@ void Master::loop(){
     }
     //退化为工作进程
     Worker worker;
-    worker.initWorkerAsChild(childHandle[id]);
-    worker.loopWorker();
+    worker.Init(childHandle[id]);
+    worker.Loop();
 }
 
-void Master::endMaster(){
-    uring.endUring();
+void Master::End(){
+    uring.End();
     for(int i = 0;i<WORKER_PORCESS_COUNT;i++){
         close(childHandle[i].pipefd);
         kill(childHandle[i].pid,SIGKILL);
     }
 }
 
-int Master::rebootWorker(pid_t pid){
+int Master::RebootWorker(pid_t pid){
     int id = -1,pipefd[2];
     for(int i = 0;i<WORKER_PORCESS_COUNT;i++){
         if(childHandle[i].pid == pid){
