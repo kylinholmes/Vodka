@@ -1,17 +1,14 @@
 #include "Engine.h"
-#include "framework.h"
+#include "Framework.h"
 #include "Render.h"
 
 #include <iostream>
-
-
 using namespace std;
 
 
 int main() {
   Debug("This is Debug\n");
 
- 
   auto r = Route::GetInstance();
   r->Use(
       "/",
@@ -56,7 +53,11 @@ int main() {
   });
   
   Engine e;
-  e.SetOption({.listen_port=8080, .worker_count=8});
+  e.SetOption({
+    .listen_port=8080, 
+    .worker_count=8,
+    .host = "kylinn.cloud"
+    });
 
   e.Run();
 

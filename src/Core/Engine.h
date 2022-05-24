@@ -9,12 +9,13 @@ const int WORKER_MAX_COUNT = 32;
 struct EngineOption{
 	int listen_port;
 	int worker_count;
+	std::string host;
 };
 using Option = EngineOption;
 
 class Engine {
 	  public:
-	  	Engine():listen_port(8080),worker_count(8){};
+	  	Engine():opt({.listen_port=8080, .worker_count=8, .host="localhost"}){};
 		void Run();
 		void End();
 		void SetOption(EngineOption);
@@ -24,8 +25,7 @@ class Engine {
 		int	 RebootWorker(pid_t pid);
 
 	  private:
-		int				   listen_port;
-		int				   worker_count;
+	  	EngineOption	   opt;
 
 		int				   server_sock;
 		Uring			   uring;
