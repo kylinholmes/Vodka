@@ -25,9 +25,7 @@ struct RouteNode {
   // std::string_view Method;
   
   std::string_view prefix;
-  /*
-      pattern without '/'
-  */
+  
   RouteNode *GetChild(std::string_view pattern, bool create = true);
   void AddHandler(HandlerFunc handler);
   void AddHandler(std::list<HandlerFunc> handlers);

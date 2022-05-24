@@ -25,18 +25,6 @@ std::string GetFileType(std::string_view file) {
   return "text/plain";
 }
 
-// Result FileManager::AddFile(std::string_view file) {
-//   for(auto &base: BaseDir){
-//     auto res = AddFile(file, base);
-//     switch (res) {  
-//       case Result::Success:
-//         return Result::Success;
-//       default:
-//         break;
-//     }
-//   }
-//   return Result::FileNotFound;
-// }
 
 Result FileManager::AddFile(std::string_view f) {
   auto file = std::string(f);
@@ -56,18 +44,6 @@ Result FileManager::AddFile(std::string_view f) {
   return Result::Success;
 }
 
-// std::tuple<char *, int, int, Result> FileManager::GetFile(std::string_view file) {
-//   for(auto &base: BaseDir){
-//     auto [c, l, f, res] = GetFile(file, base);
-//     switch (res){
-//       case Result::Success:
-//         return {c, l, f, res};
-//       default:
-//         break;
-//     }
-//   }
-//   return std::make_tuple(nullptr, 0, 0, Result::FileNotFound);
-// }
 
 std::tuple<char*, int, int, Result> FileManager::GetFile(std::string_view f){
   auto file = std::string(f);

@@ -1,23 +1,16 @@
-
-#include "Context.h"
-#include "File.h"
-#include "Master.h"
-#include "Route.h"
-#include "form.h"
+#include "Engine.h"
 #include "framework.h"
-
 #include "Render.h"
+
 #include <iostream>
-#include "log.h"
+
 
 using namespace std;
 
 
-
-
 int main() {
   Debug("This is Debug\n");
-  Engine e;
+
  
   auto r = Route::GetInstance();
   r->Use(
@@ -61,6 +54,10 @@ int main() {
   r->Bind("/register", [&](Context &cxt){
     
   });
+  
+  Engine e;
+  e.SetOption({.listen_port=8080, .worker_count=8});
+
   e.Run();
 
   return 0;

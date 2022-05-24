@@ -4,6 +4,8 @@
 #include "EventPackage.h"
 #include "Context.h"
 #include "Route.h"
+#include "error.h"
+#include "log.h"
 // #include "dllLoader.hpp"
 
 

@@ -1,6 +1,5 @@
 #include "framework.h"
-#include "error.h"
-#include <fstream>
+
 
 void FrameWorkMain(EventPackage *event) {
   Context ctx(event->m_buffer, event);

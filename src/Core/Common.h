@@ -7,6 +7,7 @@ struct ProcessHandle{
     int id;
     pid_t pid;
     int pipefd;
+    ProcessHandle() = default;
 };
 
 int createServerSocket(int port);

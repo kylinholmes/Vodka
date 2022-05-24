@@ -16,7 +16,7 @@
 #include <sys/wait.h>
 
 
-#include "Master.h"
+#include "Engine.h"
 #include "Common.h"
 #include "log.h"
 
@@ -32,14 +32,14 @@ const char* LOGO = R"(
 
 )";
 
-Master *master_instance;
+Engine *master_instance;
 void master_sigint_handler(int signo) {
-    printf("Master ^C pressed. Shutting down.\n");
+    printf("Engine ^C pressed. Shutting down.\n");
     master_instance->End();
     exit(0);
 }
 
-void Master::Run(){
+void Engine::Run(){
     auto port = listen_port;
     // fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","\033[1H\033[2J", LOGO);
     fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","", LOGO);
@@ -49,7 +49,7 @@ void Master::Run(){
     uring.InitUring();
 
     int id = 0,pipefd[2];
-    for(id = 0;id<WORKER_PORCESS_COUNT;id++){
+    for(id = 0;id<worker_count;id++){
         childHandle[id].id=id;
         socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
         if((childHandle[id].pid = fork()) == 0) {
@@ -63,7 +63,7 @@ void Master::Run(){
         childHandle[id].pipefd=pipefd[1];
     }
     
-    if(id!=WORKER_PORCESS_COUNT){
+    if(id!=worker_count){
         Worker worker;
         worker.Init(childHandle[id]);
         worker.Loop();
@@ -77,7 +77,7 @@ void Master::Run(){
     }
 }
 
-void Master::Loop(){
+void Engine::Loop(){
     EventPackage *event;
     int sockFd,sele,stat,id;
     pid_t wpid;
@@ -93,7 +93,7 @@ void Master::Loop(){
             sockFd = event->m_res;
             uring.AddAccept(&event_for_accept,server_sock,
                 &client_addr,&client_addr_len);
-            sele = rand()%WORKER_PORCESS_COUNT;
+            sele = rand()%worker_count;
             send_fd(childHandle[sele].pipefd,sockFd);
             close(sockFd);
             //这里异步地发送会导致短时间过多的fd，导致崩溃;所以必须同步发送，并及时关闭socket
@@ -107,17 +107,22 @@ void Master::Loop(){
     worker.Loop();
 }
 
-void Master::End(){
+void Engine::End(){
     uring.End();
-    for(int i = 0;i<WORKER_PORCESS_COUNT;i++){
+    for(int i = 0;i<worker_count;i++){
         close(childHandle[i].pipefd);
         kill(childHandle[i].pid,SIGKILL);
     }
 }
 
-int Master::RebootWorker(pid_t pid){
+void Engine::SetOption(EngineOption opt){
+    listen_port = opt.listen_port;
+    worker_count = opt.worker_count;
+}
+
+int Engine::RebootWorker(pid_t pid){
     int id = -1,pipefd[2];
-    for(int i = 0;i<WORKER_PORCESS_COUNT;i++){
+    for(int i = 0;i<worker_count;i++){
         if(childHandle[i].pid == pid){
             id = i;
             break;
@@ -131,7 +136,7 @@ int Master::RebootWorker(pid_t pid){
     socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
     if((childHandle[id].pid = fork()) == 0) {
         close(pipefd[1]);
-        for(int i = 0;i<WORKER_PORCESS_COUNT;i++)
+        for(int i = 0;i<worker_count;i++)
             if(id!=i)close(childHandle[i].pipefd);
         childHandle[id].pipefd = pipefd[0];
         return id;
