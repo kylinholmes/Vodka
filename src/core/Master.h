@@ -9,18 +9,18 @@ const int WORKER_PORCESS_COUNT = 8;
 
 class Master {
 	  public:
-	  	Master():listen_port(80){};
+	  	Master():listen_port(8080){};
 		void Run();
 		void endMaster();
 
 	  private:
-		void loopMaster();
+		void loop();
 		int	 rebootWorker(pid_t pid);
 
 	  private:
 		int				   server_sock;
 		int				   listen_port;
-		Uringer			   uring;
+		Uring			   uring;
 		EventPackage	   event_for_accept;
 		struct sockaddr_in client_addr;
 		socklen_t		   client_addr_len = sizeof(client_addr);

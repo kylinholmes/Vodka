@@ -113,6 +113,8 @@ HandlerFunc SendFile(std::string file, bool auto_add, size_t offset)
 								case Result::Success:
 										Debug("Get  File {} Success\n", file);
 										ctx.SetBody(c + offset, l);
+										ctx.SetHeader("Content-Type",GetFileType(file));
+										ctx.SetHeader("Content-Length", std::to_string(l));
 										break;
 								case Result::FileNotFound:
 								case Result::OpenFileError:

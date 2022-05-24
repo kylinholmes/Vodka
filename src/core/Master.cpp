@@ -73,11 +73,11 @@ void Master::Run(){
         signal(SIGKILL, master_sigint_handler);
         uring.addAccept(&event_for_accept,server_sock,
             &client_addr,&client_addr_len);
-        loopMaster();
+        loop();
     }
 }
 
-void Master::loopMaster(){
+void Master::loop(){
     EventPackage *event;
     int sockFd,sele,stat,id;
     pid_t wpid;

@@ -18,7 +18,7 @@ using namespace std;
 int main() {
   Debug("This is Debug\n");
   Engine e;
-  
+ 
   auto r = Route::GetInstance();
   r->Use(
       "/",
@@ -26,11 +26,12 @@ int main() {
         ctx.SetHeader("Server", "Kylin's Demo");
         ctx.SetHeader("Inspired-By", "Fawkes");
         ctx.SetHeader("Thanks", "Sheey");
-      }
-      // , [](Context &ctx){
-      //   ctx.Next();
-      //   Info("Resuest Path: {}\n", ctx.Path());
-      // }
+      	ctx.SetHeader("Connection", "Keep-Alive");
+	}
+       , [](Context &ctx){
+         ctx.Next();
+         Info("Resuest Path: {}\n", ctx.Path());
+       }
       
       );
   

@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 
 #include "EventPackage.h"
-#include "Uringer.h"
+#include "Uring.h"
 #include "Common.h"
 
 class Worker{
@@ -24,7 +24,7 @@ private:
 
 private:
     int server_sock;
-    Uringer uring;
+    Uring uring;
     EventPackage event_for_accept,event_for_recvmsg;
     EventPackagePool eventPool;
     struct sockaddr_in client_addr;

@@ -6,7 +6,7 @@
 #include "log.h"
 #include "EventPackage.h"
 
-class Uringer
+class Uring
 {
 public:
     void initUring();
