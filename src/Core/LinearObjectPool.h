@@ -1,9 +1,7 @@
 #ifndef _LINEAR_OBJECT_POOL_H_
 #define _LINEAR_OBJECT_POOL_H_
 
-#include <iostream>
-#include <string_view>
-#include <string>
+
 
 
 template<typename T,int max_len>

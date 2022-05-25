@@ -6,7 +6,7 @@
 #include <sys/uio.h>
 
 const int BUFFER_SIZE = 8192;
-const int EVENT_PACKAGE_POOL_MAX_SIZE = 1000;
+const int EVENT_PACKAGE_POOL_MAX_SIZE = 1024;
 const int MAX_IOVE_COUNT = 5;
 
 const int RESPONSER_BUFFER_HEAD_LENGTH = 4096;

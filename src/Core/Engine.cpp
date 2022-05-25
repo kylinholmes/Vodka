@@ -20,28 +20,26 @@
 #include "log.h"
 
 const char* LOGO = R"(    
-     _    __      __       __
-    | |  / /___  / /______/ /___ _
-    | | / / __ \/ //_/ __  / __ `/
-    | |/ / /_/ / ,< / /_/ / /_/ /
-    |___/\____/_/|_|\__,_/\__,_/
-
+     _    __          ____        
+    | |  / /___  ____/ / /______ _
+    | | / / __ \/ __  / //_/ __ `/
+    | |/ / /_/ / /_/ / ,< / /_/ / 
+    |___/\____/\__,_/_/|_|\__,_/  
+                              
     Author: Kylin 
-    Version: 0.12
+    Version: 0.13
 
 )";
 
 Engine *master_instance;
 void master_sigint_handler(int signo) {
-    printf("Engine ^C pressed. Shutting down.\n");
+    printf("Engine is Shutting down.\n");
     master_instance->End();
     exit(0);
 }
 
 void Engine::Run(){
     auto port = opt.listen_port;
-
-    // fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","\033[1H\033[2J", LOGO);
     fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","", LOGO);
     server_sock = createServerSocket(port);
     Info("🚀 Start on http://{}:{}\n", opt.host , port);

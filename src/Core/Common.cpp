@@ -76,24 +76,24 @@ size_t send_fd(int fd,int fd_to_send){
     return sendmsg(fd,&msg,0);
 }
 
-int recv_fd(int fd){
-    struct iovec iov[1];
-    struct msghdr msg;
-    char buf[0];
+// int recv_fd(int fd){
+//     struct iovec iov[1];
+//     struct msghdr msg;
+//     char buf[0];
 
-    iov[0].iov_base=buf;
-    iov[0].iov_len=1;
-    msg.msg_name = NULL;
-    msg.msg_namelen=0;
-    msg.msg_iov=iov;
-    msg.msg_iovlen=1;
+//     iov[0].iov_base=buf;
+//     iov[0].iov_len=1;
+//     msg.msg_name = NULL;
+//     msg.msg_namelen=0;
+//     msg.msg_iov=iov;
+//     msg.msg_iovlen=1;
 
-    cmsghdr cm;
-    msg.msg_control=&cm;
-    msg.msg_controllen=CONTROL_LEN;
+//     cmsghdr cm;
+//     msg.msg_control=&cm;
+//     msg.msg_controllen=CONTROL_LEN;
 
-    recvmsg(fd,&msg,0);
+//     recvmsg(fd,&msg,0);
 
-    int fd_to_send = *(int *)CMSG_DATA( &cm );
-    return fd_to_send;
-}
+//     int fd_to_send = *(int *)CMSG_DATA( &cm );
+//     return fd_to_send;
+// }

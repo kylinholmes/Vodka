@@ -15,7 +15,7 @@ using Option = EngineOption;
 
 class Engine {
 	  public:
-	  	Engine():opt({.listen_port=8080, .worker_count=8, .host="localhost"}){};
+	  	Engine():opt(){};
 		void Run();
 		void End();
 		void SetOption(EngineOption);
@@ -25,7 +25,7 @@ class Engine {
 		int	 RebootWorker(pid_t pid);
 
 	  private:
-	  	EngineOption	   opt;
+	  	EngineOption	   opt{.listen_port=8080, .worker_count=8, .host="localhost"};
 
 		int				   server_sock;
 		Uring			   uring;

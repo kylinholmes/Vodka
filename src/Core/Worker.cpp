@@ -76,7 +76,7 @@ void Worker::CompleteEvent(EventPackage* event) {
 
 Worker* worker_instance;
 void worker_sigint_handler(int signo) {
-    printf("Worker:^C pressed. Shutting down.\n");
+    printf("Worker is Shutting down.\n");
     worker_instance->End();
     exit(0);
 }

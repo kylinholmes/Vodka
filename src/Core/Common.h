@@ -14,6 +14,6 @@ int createServerSocket(int port);
 
 size_t send_fd(int fd,int fd_to_send);
 
-int recv_fd(int fd);
+// int recv_fd(int fd);
 
 #endif

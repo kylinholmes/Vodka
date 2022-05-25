@@ -17,7 +17,8 @@ EventPackage* Uring::WaitEvent(){
     int ret = io_uring_wait_cqe(&ring, &cqe);
     EventPackage *event = (EventPackage *)cqe->user_data;
     if (ret < 0) {
-        fprintf(stderr,"io_uring_wait_cqe");
+        // fprintf(stderr,"io_uring_wait_cqe");
+        Error("io_uring_wait_cqe");
         exit(1);
     }
     if (cqe->res < 0) {
