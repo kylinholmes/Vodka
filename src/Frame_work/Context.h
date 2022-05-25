@@ -4,6 +4,7 @@
 #include <string_view>
 #include "EventPackage.h"
 #include "http.h"
+#include "Render.h"
 
 struct Context {
     using Request = HTTP::Request;
@@ -25,6 +26,7 @@ struct Context {
     void SetHeader(std::string key, std::string value);
     void SetBody(std::string_view value);
     void SetBody(char* value, size_t len);
+    void Json(json j);
 
     void Run();
     void Next();

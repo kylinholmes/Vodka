@@ -22,7 +22,7 @@ EventPackage* Uring::WaitEvent(){
         exit(1);
     }
     if (cqe->res < 0) {
-        Error("Async Request Failed: {} for event {}\n", strerror(-cqe->res), event->m_eventType);
+       Warn("Async Request Failed: {} for event {}\n", strerror(-cqe->res), event->m_eventType);
         
         exit(1);
     }

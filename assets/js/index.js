@@ -7,8 +7,17 @@ function login(params) {
     });
 
   };
-  
-    $(function() {
+function register(){
+   $.post('/register', {
+      name :$("#regname").val(),
+      pass :$("#regpass").val(),
+   }), function(data){
+      console.log(data);
+   }
+}
+
+
+$(function() {
 
 $(".input input").focus(function() {
 

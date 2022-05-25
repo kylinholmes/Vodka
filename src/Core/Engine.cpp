@@ -128,7 +128,7 @@ int Engine::RebootWorker(pid_t pid){
     if(id == -1) return -1;
     close(childHandle[id].pipefd);
 
-    Info("Worker end pid: {} id: {}\n",pid,id);
+    Warn("Worker end pid: {} id: {}\n",pid,id);
     childHandle[id].id=id;
     socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
     if((childHandle[id].pid = fork()) == 0) {

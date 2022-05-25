@@ -1,4 +1,5 @@
 #include "Context.h"
+#include <fmt/format.h>
 
 std::string_view Context::Path() { return _req.url.path; }
 
@@ -22,6 +23,11 @@ void Context::SetBody(char *value, size_t len) {
   event->ioves[1].iov_len = len;
   event->ioves[1].iov_base = value;
   _res.use_event = true;
+}
+void Context::Json(json j){
+  _res.body = to_string(j);
+  SetHeader("Content-Type", "application/json");
+  SetHeader("Content-Length", fmt::to_string(_res.body.size()));
 }
 
 void Context::Run() {
