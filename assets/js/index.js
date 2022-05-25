@@ -11,9 +11,9 @@ function register(){
    $.post('/register', {
       name :$("#regname").val(),
       pass :$("#regpass").val(),
-   }), function(data){
+   }, function(data){
       console.log(data);
-   }
+   })
 }
 
 

@@ -23,6 +23,8 @@ int main() {
   using namespace hiberlite;
 	hiberlite::Database db("test.db");
   db.registerBeanClass<User>();
+  
+  // drop and crate new one
   db.dropModel();
   db.createModel();
   
@@ -85,20 +87,11 @@ int main() {
   
   
   r->Bind("/query", [&](Context &ctx){
-    // if(ctx.Header("Cookie") != "12345"){
-    //   json j;
-    //   j["status"] = "failed";
-    //   ctx.SetBody(to_string(j));
-    //   ctx.SetHeader("Content-Type", "application/json");
-
-    //   return;
-    // }
-    
-    // Info("List All User\n");
-    // auto user = db.getAllBeans<User>();
-    // for(auto i :user){ 
-    //   Info("User: {} {}\n", i->name, i->password);
-    // }
+    Info("List All User\n");
+    auto user = db.getAllBeans<User>();
+    for(auto i :user){ 
+      Info("User: {} {}\n", i->name, i->password);
+    }
   });
 
   Engine e;
