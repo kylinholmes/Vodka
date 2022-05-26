@@ -105,7 +105,6 @@ HandlerFunc SendFile(std::string file, bool auto_add, size_t offset)
 				}
 		}
 		return [=](Context& ctx) {
-				Debug("Send File {}\n", file);
 				auto fm = FileManager::GetInstance();
 				{
 						auto [c, l, f, res] = fm->GetFile(file);
