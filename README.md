@@ -11,6 +11,7 @@ name comes from another web framework `Gin` in Go. In the setting of 名探偵�
 - [x] 3rd-lib support json and sqlite ORM
 - [ ] TCP Connection Pool
 - [ ] Full HTTP Protocol support
+- [ ] Cross-platform support
 ## Environments
 Linux-kernel 5.16.9_x86_64
 
