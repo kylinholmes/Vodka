@@ -1,7 +1,14 @@
 # Vodka
 Vodka is a light fast and modern web framework for C++.
-name comes from another web frameWork `Gin` in Go. In the setting of 名探偵コナン, gin and vodka are partners.
-
+name comes from another web framework `Gin` in Go. In the setting of 名探偵コナン, gin and vodka are partners.
+## Features
+- [x] Fast IO Model `uring`
+- [x] Easy to use API 
+- [x] File Optimized
+- [x] Light Weight, memory efficient
+- [x] 3rd-lib support json and sqlite ORM
+- [ ] TCP Connection Pool
+- [ ] Full HTTP Protocol support
 ## Environments
 Linux-kernel 5.16.9_x86_64
 
@@ -29,7 +36,7 @@ export VCPKG_CMAKE=/path/to/vcpkg.cmake
 # VCPKG_CMAKE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake
 ```
 
-Vodka also use a submodule as 3th-p library, after clone the repo, add submodule into you dir.
+Vodka also use a submodule as 3rd-p library, after clone the repo, add submodule into you dir.
 > submodule is a sqlite ORM lib, you can pass this step, and remove `#include ` modify `CMakeLists.txt`
 ```bash
 git submodule init
