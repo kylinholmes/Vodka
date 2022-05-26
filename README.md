@@ -4,11 +4,11 @@ Vodka is a light fast and modern web framework for C++.
 name comes from another web framework `Gin` in Go. In the setting of 名探偵コナン, gin and vodka are partners.
 
 ## Features
-- [x] Fast IO Model `uring`
-- [x] Easy to use API 
-- [x] File Optimized
-- [x] Light Weight, memory efficient
-- [x] 3rd-lib support json and sqlite ORM
+- ✔ Fast IO Model `uring` 
+- ✔ Easy to use API 
+- ✔ File Optimized
+- ✔ Light Weight, memory efficient
+- ✔ 3rd-lib support json and sqlite ORM
 - [ ] TCP Connection Pool
 - [ ] Full HTTP Protocol support
 - [ ] Cross-platform support
