@@ -31,9 +31,9 @@ const char* LOGO = R"(
 
 )";
 const char* debug_info = R"(
-    Debug Mode
-    set CMAKE_BUILD_TYPE Release in CMakeLists.txt or
-    unset `#define DEBUG_MODE` in code
+    You are in Debug Mode
+    set CMAKE_BUILD_TYPE Release in CMakeLists.txt to build release version
+    Don't worry, ALL Debug info will auto clean up in release version
 )";
 Engine *master_instance;
 void master_sigint_handler(int signo) {

@@ -13,7 +13,7 @@ set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_CMAKE}
   CACHE STRING "Vcpkg toolchain file")
 set(CMAKE_EXPORT_COMPILE_COMMANDS On)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-terminate")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-terminate -Wreturn-local-addr")
 file(GLOB CORE "src/Core/*.cpp")
 file(GLOB FRAME_WORK "src/Frame_work/*.cpp")
 file(GLOB RENDER "src/Render/*.cpp")
