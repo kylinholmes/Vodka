@@ -48,7 +48,8 @@ int main() {
 
   auto r = Route::GetInstance();
   r->Use("/", [](Context &ctx) {
-    Info("{}\n",ctx.Path());
+    Info("{}\n", ctx.Path());
+    ctx.Next();
   });
 
   r->Bind("/login", [&](Context &ctx){
@@ -59,7 +60,7 @@ int main() {
     Info("Login Username: {} Password: {}\n", username, password);
     json j;
     auto user = db.getAllBeans<User>();
-    for(auto i :user){
+    for(auto &i :user){
       if(i->name == username && i->password == password){
         j["status"] = "success";
         ctx.SetHeader("Set-Cookie", "12345");
@@ -77,6 +78,7 @@ int main() {
     Form form(ctx.Body());
     auto username = form.Get("name");
     auto password = form.Get("pass");
+    
     Info("Regisiter {} {}\n", username, password);
     User u;
     auto p = db.copyBean(u);
@@ -90,11 +92,27 @@ int main() {
   
   
   r->Bind("/query", [&](Context &ctx){
-    Info("List All User\n");
-    auto user = db.getAllBeans<User>();
-    for(auto i :user){ 
-      Info("User: {} {}\n", i->name, i->password);
+    Info("{}\n",ctx._req.headers);
+    json j;
+    if(ctx.Header("Cookie") != "12345"){
+      j["status"] = "failed";
+      j["reason"] = "no cookie";
+      ctx.Json(j);
+      return;
     }
+    auto user = db.getAllBeans<User>();
+    j["status"] = "success";
+    Info("{}\n", user.size());
+    j["number"] = user.size();
+    json::array_t a;
+    
+    for(auto &i :user){ 
+      a.push_back({ {"User",i->name}, {"Password", i->password} });
+      Info("User: {} ,Password: {}\n", i->name, i->password);
+
+    }
+    j["data"] = a;
+    ctx.Json(j);
   });
 
   Engine e;

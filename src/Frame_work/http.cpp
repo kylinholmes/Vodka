@@ -2,7 +2,7 @@
 
 HTTP::URI::URI(std::string_view uri) {
     auto pos = 0;
-    for (pos; pos < uri.size(); pos++) {
+    for (; pos < uri.size(); pos++) {
         if (uri[pos] == '?') {
             path = uri.substr(0, pos);
             break;
@@ -69,7 +69,7 @@ HTTP::Request::Request(const char* req) {
             break;
         auto key = std::string_view(tmp, key_pos);
         auto value_pos = match_value(tmp + key_pos + 1);
-        auto value = std::string_view(tmp + key_pos + 1, value_pos);
+        auto value = std::string_view(tmp + key_pos + 2, value_pos - 2);
 
         i += key_pos + value_pos + 2;
         headers[key] = value;
@@ -86,9 +86,7 @@ int HTTP::Request::match_key(const char* s, int offset) {
     return -1;
 }
 int HTTP::Request::match_value(const char* s, int offset) {
-    for (; s[offset] != '\r'; offset++)
-        ;
-
+    for (; s[offset] != '\r'; offset++);
     return offset + s[offset + 1] == '\n' ? 0 : offset + 1;
 }
 
