@@ -92,7 +92,7 @@ std::string_view Context::Body();
 void Context::SetHeader(std::string key, std::string value);
 void Context::SetBody(std::string body);
 void Context::SetBody(char* body, size_t size);
-void Context::Json(json j);
+void Context::Json(nolohmann::json j);
 
 // Control Flow
 void Context::Next();
