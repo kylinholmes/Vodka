@@ -9,6 +9,7 @@ name comes from another web framework `Gin` in Go. In the setting of 名探偵�
 - ✔ File Optimized
 - ✔ Light Weight, memory efficient
 - ✔ 3rd-lib support json and sqlite ORM
+- ✔ No side effect Debug Mode
 - ❌ TCP Connection Pool
 - ❌ Full HTTP Protocol support
 - ❌ Cross-platform support
