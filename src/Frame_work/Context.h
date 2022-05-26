@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <functional>
 #include <string_view>
+#include <sys/types.h>
 #include "EventPackage.h"
 #include "http.h"
 #include "Render.h"
@@ -15,19 +16,22 @@ struct Context {
     Context(const char* s, EventPackage *e)
         : _req(s), _res(), event(e), _handler_list(), _iter(){};
 
-    // TODO
-    std::string_view IP();
+    
+    std::string_view IP();  // TODO
     std::string_view Path();
     std::string_view Method();
     std::string_view Params(std::string_view key);
     std::string_view Header(std::string_view key);
     std::string_view Body();
 
+    
+    void SetStatus(std::string code, std::string msg);
+    void SetStatus(u_int32_t code, std::string msg);
     void SetHeader(std::string key, std::string value);
     void SetBody(std::string_view value);
     void SetBody(char* value, size_t len);
     void Json(json j);
-
+    
     void Run();
     void Next();
     void Abort();

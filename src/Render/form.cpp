@@ -48,3 +48,17 @@ void Form::Set(std::string_view Key, std::string_view Value) {
   }
   data.push_back(std::make_pair(Key, Value));
 }
+
+std::string to_string(Form form){
+  std::string result;
+  for (auto &[k, v] : form.data) {
+    result += k;
+    result += "=";
+    result += v;
+    result += "&";
+  }
+  if (result.length() > 0) {
+    result.pop_back();
+  }
+  return result;
+}

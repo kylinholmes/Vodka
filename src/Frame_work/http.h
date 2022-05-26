@@ -41,7 +41,8 @@ struct Response {
     std::string version;
     std::string status_code;
     std::string status_message;
-    std::unordered_map<std::string, std::string> headers;
+    // std::unordered_map<std::string, std::string> headers;
+    std::list<std::pair<std::string, std::string>> headers;
     std::string body;
 };  // struct Response
 

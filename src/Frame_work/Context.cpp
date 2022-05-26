@@ -1,5 +1,6 @@
 #include "Context.h"
 #include <fmt/format.h>
+#include <sys/types.h>
 
 std::string_view Context::Path() { return _req.url.path; }
 
@@ -15,10 +16,19 @@ std::string_view Context::Header(std::string_view key) {
 
 std::string_view Context::Body() { return _req.body; }
 void Context::SetHeader(std::string key, std::string value) {
-  _res.headers[key] = value;
+  // _res.headers[key] = value;
+  _res.headers.push_back(std::make_pair(key, value));
+}
+
+void Context::SetStatus(std::string code, std::string msg) {
+  _res.status_code = code;
+  _res.status_message = msg;
+}
+void Context::SetStatus(u_int32_t code, std::string msg) {
+  _res.status_code = std::to_string(code);
+  _res.status_message = msg;
 }
 void Context::SetBody(std::string_view value) { _res.body = value; }
-
 void Context::SetBody(char *value, size_t len) {
   event->ioves[1].iov_len = len;
   event->ioves[1].iov_base = value;
@@ -33,7 +43,7 @@ void Context::Json(json j){
 void Context::Run() {
   _iter = _handler_list.begin();
   this->Next();
-  _response_handler(*this);
+  // _response_handler(*this);
 }
 void Context::Next() {
   for (; _iter != _handler_list.end();) {

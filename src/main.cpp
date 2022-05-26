@@ -2,6 +2,7 @@
 #include "Framework.h"
 
 
+#include "Route.h"
 #include "log.h"
 #include <iostream>
 #include <string>
@@ -19,6 +20,19 @@ struct User{
 };
 HIBERLITE_EXPORT_CLASS(User)
 
+void SetDefaultHeader(){
+  auto r = Route::GetInstance();
+  r->Use(
+      [](Context &ctx) {
+        ctx.SetHeader("Server", "Kylin's Demo");
+        ctx.SetHeader("Inspired-By", "Fawkes");
+        ctx.SetHeader("Thanks", "Sheey");
+      	ctx.SetHeader("Connection", "Keep-Alive");
+	    }
+      );  
+  r->Static("assets");
+}
+
 int main() {
   using namespace hiberlite;
 	hiberlite::Database db("test.db");
@@ -30,23 +44,12 @@ int main() {
   
   Debug("This is Debug\n");
   
+  SetDefaultHeader();
+
   auto r = Route::GetInstance();
-  r->Use(
-      "/",
-      [](Context &ctx) {
-        ctx.SetHeader("Server", "Kylin's Demo");
-        ctx.SetHeader("Inspired-By", "Fawkes");
-        ctx.SetHeader("Thanks", "Sheey");
-      	ctx.SetHeader("Connection", "Keep-Alive");
-	    }
-       //, [](Context &ctx){
-       //  ctx.Next();
-       //  Info("Resuest Path: {}\n", ctx.Path());
-       //}
-      );
-  
-  r->Static("assets");
-  
+  r->Use("/", [](Context &ctx) {
+    Info("{}\n",ctx.Path());
+  });
 
   r->Bind("/login", [&](Context &ctx){
     Form form(ctx.Body());

@@ -6,7 +6,8 @@
 #include <functional>
 #include <list>
 #include <dirent.h>
-
+// include shared_ptr
+#include <memory>
 using HandlerFunc = std::function<void(Context &ctx)>;
 
 std::list<std::string_view> split(std::string_view str, char delimiter = '/',
@@ -36,9 +37,9 @@ HandlerFunc SendFile(std::string file, bool auto_add=true, size_t offset=0);
 
 struct Route {
   RouteNode *Root;
-  static Route *GetInstance() {
+  static std::shared_ptr<Route> GetInstance() {
     static Route r;
-    return &r;
+    return std::make_shared<Route>(r);
   }
 
   RouteNode *GetNode(std::string_view pattern);

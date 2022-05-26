@@ -144,7 +144,8 @@ void Route::WarpContext(Context& ctx)
 				
         node = node->GetChild(s);
 				if (node == nullptr) {
-						ctx.AddResponseHandler(NotFound);
+						ctx.AddHandlerFunc(NotFound);
+						// ctx.AddResponseHandler(NotFound);
 						return;
 				}
 				ctx.AddHandlerFunc(node->Handlers);
@@ -152,10 +153,10 @@ void Route::WarpContext(Context& ctx)
 
 		if (!node->ResponseHandler) {
 				Debug("No Response Handler\n");
-				ctx.AddResponseHandler(NotFound);
+				ctx.AddHandlerFunc(NotFound);
 				return;
 		}
-		ctx.AddResponseHandler(node->ResponseHandler);
+		ctx.AddHandlerFunc(node->ResponseHandler);
 }
 
 void Route::Static(std::string_view dir)

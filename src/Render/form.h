@@ -15,3 +15,4 @@ struct Form{
     private:
     std::pair<size_t, size_t> match(const char* data, size_t len);
 };
+std::string to_string(Form form);
