@@ -30,7 +30,7 @@ void SetDefaultHeader(){
       	ctx.SetHeader("Connection", "Keep-Alive");
 	    }
       );  
-  r->Static("assets");
+  
 }
 
 int main() {
@@ -42,8 +42,6 @@ int main() {
   db.dropModel();
   db.createModel();
   
-  Debug("This is Debug\n");
-  
   SetDefaultHeader();
 
   auto r = Route::GetInstance();
@@ -51,7 +49,7 @@ int main() {
     Info("{}\n", ctx.Path());
     ctx.Next();
   });
-
+  r->Static("assets");
   r->Bind("/login", [&](Context &ctx){
     Form form(ctx.Body());
     auto username = form.Get("name");

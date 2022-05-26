@@ -11,8 +11,10 @@ enum struct LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3, QUIET = 4 };
 
 template <typename... Args> inline void Debug(std::string_view format, Args... args)
 {
-		// fmt::print(fmt::fg(fmt::color::light_blue), "[DEBUG]   ");
-		// fmt::print(fmt::fg(fmt::color::light_blue), format, args...);
+		#ifdef DEBUG_MODE
+		fmt::print(fmt::fg(fmt::color::light_blue), "[DEBUG]   ");
+		fmt::print(fmt::fg(fmt::color::light_blue), format, args...);
+		#endif
 }
 
 template <typename... Arg>  inline void Info(std::string_view format, Arg... args)
