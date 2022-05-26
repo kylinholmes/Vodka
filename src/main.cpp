@@ -1,3 +1,5 @@
+#include "log.h"
+#include "Context.h"
 #include "Engine.h"
 #include "Framework.h"
 
@@ -23,12 +25,16 @@ HIBERLITE_EXPORT_CLASS(User)
 void SetDefaultHeader(){
   auto r = Route::GetInstance();
   r->Use(
+      "/",
       [](Context &ctx) {
         ctx.SetHeader("Server", "Kylin's Demo");
         ctx.SetHeader("Inspired-By", "Fawkes");
         ctx.SetHeader("Thanks", "Sheey");
       	ctx.SetHeader("Connection", "Keep-Alive");
 	    }
+      ,[](Context &ctx){
+
+      }
       );  
   
 }

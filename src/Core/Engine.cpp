@@ -31,9 +31,9 @@ const char* LOGO = R"(
 
 )";
 const char* debug_info = R"(
-Debug Mode
-set CMAKE_BUILD_TYPE Release in CMakeLists.txt or
-use `#define DEBUG_MODE` in code
+    Debug Mode
+    set CMAKE_BUILD_TYPE Release in CMakeLists.txt or
+    unset `#define DEBUG_MODE` in code
 )";
 Engine *master_instance;
 void master_sigint_handler(int signo) {
@@ -46,9 +46,10 @@ void Engine::Run(){
     auto port = opt.listen_port;
     
     fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","", LOGO);
-
-    server_sock = createServerSocket(port);
+    // fmt::print(fmt::fg(fmt::color::light_blue), "{}\n", debug_info);
     Debug("{}\n", debug_info);
+    server_sock = createServerSocket(port);
+    
     Info("🚀 Start on http://{}:{}\n", opt.host , port);
     
     uring.InitUring();

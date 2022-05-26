@@ -145,7 +145,6 @@ void Route::WarpContext(Context& ctx)
         node = node->GetChild(s);
 				if (node == nullptr) {
 						ctx.AddHandlerFunc(NotFound);
-						// ctx.AddResponseHandler(NotFound);
 						return;
 				}
 				ctx.AddHandlerFunc(node->Handlers);
@@ -163,6 +162,7 @@ void Route::Static(std::string_view dir)
 {
 		using namespace std;
 		using namespace fmt;
+		Debug("Route::Static Mapping Path\n");
 		list<pair<string, string>> list;
 		GetAllFiles(dir.data(), list);
 		auto fm = FileManager::GetInstance();
