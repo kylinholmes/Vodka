@@ -60,7 +60,7 @@ example is in src/main.cpp
 ![TQ5OCLXQYSGG9L0FTA59(S3](https://user-images.githubusercontent.com/45586871/170319058-2dacdf2e-889b-407a-9bd5-5dc684d4f0b2.png)
 ![image](https://user-images.githubusercontent.com/45586871/170319115-45b2ebf0-2f6d-4444-95de-af5654cb402d.png)
 
-1. it will init a db, storage User table. 
+1. it will init a db, create User table. 
 2. register static file, auto mapping to route.
 3. register following pattern:
     /register 
