@@ -27,7 +27,7 @@ const char* LOGO = R"(
     |___/\____/\__,_/_/|_|\__,_/  
                               
     Author: Kylin 
-    Version: 0.13
+    Version: {}
 
 )";
 const char* debug_info = R"(
@@ -45,8 +45,7 @@ void master_sigint_handler(int signo) {
 void Engine::Run(){
     auto port = opt.listen_port;
     
-    fmt::print(fmt::fg(fmt::color::dark_sea_green) ,"{}{}","", LOGO);
-    // fmt::print(fmt::fg(fmt::color::light_blue), "{}\n", debug_info);
+    fmt::print(fmt::fg(fmt::color::dark_sea_green) ,LOGO, VODKA_VERSION);
     Debug("{}\n", debug_info);
     server_sock = createServerSocket(port);
     
@@ -123,6 +122,7 @@ void Engine::End(){
 
 void Engine::SetOption(EngineOption option){
     this->opt = option;
+    this->opt.worker_count = option.worker_count > 32? 32:option.worker_count;
 }
 
 int Engine::RebootWorker(pid_t pid){

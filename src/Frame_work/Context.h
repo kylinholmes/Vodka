@@ -27,10 +27,11 @@ struct Context {
     
     void SetStatus(std::string code, std::string msg);
     void SetStatus(u_int32_t code, std::string msg);
-    void SetHeader(std::string key, std::string value);
-    void SetBody(std::string_view value);
-    void SetBody(char* value, size_t len);
+    Context& SetHeader(std::string key, std::string value);
+    Context& SetBody(std::string_view value);
+    Context& SetBody(char* value, size_t len);
     void Json(json j);
+    void OK();
     
     void Run();
     void Next();
@@ -38,7 +39,7 @@ struct Context {
     void WriteEvent();
     void AddHandlerFunc(HandlerFunc func);
     void AddHandlerFunc(std::list<HandlerFunc> funcs);
-    void AddResponseHandler(HandlerFunc func);
+    // void AddResponseHandler(HandlerFunc func);
     size_t HandlerSize();
 
     Request _req;
@@ -47,7 +48,7 @@ struct Context {
     //    private:
     EventPackage *event;
     std::list<HandlerFunc> _handler_list;
-    HandlerFunc _response_handler;
+    // HandlerFunc _response_handler;
     std::list<HandlerFunc>::iterator _iter;
     std::string _ip;
     bool _abort = false;

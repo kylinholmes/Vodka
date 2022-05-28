@@ -15,9 +15,10 @@ std::string_view Context::Header(std::string_view key) {
 }
 
 std::string_view Context::Body() { return _req.body; }
-void Context::SetHeader(std::string key, std::string value) {
+Context& Context::SetHeader(std::string key, std::string value) {
   // _res.headers[key] = value;
   _res.headers.push_back(std::make_pair(key, value));
+  return *this;
 }
 
 void Context::SetStatus(std::string code, std::string msg) {
@@ -28,18 +29,21 @@ void Context::SetStatus(u_int32_t code, std::string msg) {
   _res.status_code = std::to_string(code);
   _res.status_message = msg;
 }
-void Context::SetBody(std::string_view value) { _res.body = value; }
-void Context::SetBody(char *value, size_t len) {
+Context&  Context::SetBody(std::string_view value) { _res.body = value; return *this;}
+Context&  Context::SetBody(char *value, size_t len) {
   event->ioves[1].iov_len = len;
   event->ioves[1].iov_base = value;
   _res.use_event = true;
+  return *this;
 }
 void Context::Json(json j){
   _res.body = to_string(j);
   SetHeader("Content-Type", "application/json");
   SetHeader("Content-Length", fmt::to_string(_res.body.size()));
 }
-
+void Context::OK(){
+  SetStatus("200", "OK");
+}
 void Context::Run() {
   _iter = _handler_list.begin();
   this->Next();
@@ -62,7 +66,7 @@ void Context::AddHandlerFunc(HandlerFunc func) {
 void Context::AddHandlerFunc(std::list<HandlerFunc> funcs) {
   _handler_list.splice(_handler_list.end(), funcs);
 }
-void Context::AddResponseHandler(HandlerFunc func) { _response_handler = func; }
+// void Context::AddResponseHandler(HandlerFunc func) { _response_handler = func; }
 size_t Context::HandlerSize() { return _handler_list.size(); }
 void Context::WriteEvent() {
   std::string tmp = (_res.version + " " + _res.status_code + " " +

@@ -6,6 +6,7 @@
 #include "Worker.h"
 
 const int WORKER_MAX_COUNT = 32;
+
 struct EngineOption{
 	int listen_port;
 	int worker_count;

@@ -1,5 +1,6 @@
 #pragma once
 #include <fcntl.h>
+#include <memory>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <string_view>
@@ -18,12 +19,12 @@ struct FileManager {
     
     
     Result AddFile(std::string_view file);
-    // Result AddFile(std::string_view file, std::string_view base_dir);
+    // void AddFile(std::string_view file);
     std::tuple<char*, int, int, Result> GetFile(std::string_view file);
-    // std::tuple<char*, int, int, Result> GetFile(std::string_view file, std::string_view base_dir);
+    // std::tuple<char*, int, int> GetFile(std::string_view file);
 
-    static FileManager* GetInstance() {
+    static std::shared_ptr<FileManager> GetInstance() {
         static FileManager fm;
-        return &fm;
+        return std::make_shared<FileManager>(fm);
     }
 };

@@ -11,10 +11,3 @@ void NotFound(Context &ctx) {
   ctx.SetHeader("Context-Length", "233");
   ctx.Abort();
 }
-
-// void FileNotFound::Handler(Context &ctx) { NotFound(ctx); }
-
-// void NoResponseHandler::Handler(Context &ctx) {
-//   NotFound(ctx);
-// }
-// void OpenFileError::Handler(Context &ctx) { NotFound(ctx); }

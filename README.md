@@ -110,3 +110,5 @@ void Context::AddResponseHandler(HandlerFunc handler);
 
 Vodka got a almost 7w req/s. while Nginx is about 1.4w req/s in the same machine.
 It's 5 times that of nginx.
+
+## Output
