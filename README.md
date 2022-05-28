@@ -75,7 +75,7 @@ using HandlerFunc = std::function<void(Context&)>;
 
 // Route.h
 void Route::Use(std::string pattern, HandlerFunc handler);
-void Route::Bind(std::string pattern, HandlerFunc handler);
+void Route::Bind(std::string pattern, HandlerFunc handler, std::string Method="");
 HandlerFunc SendFile(std::string path);
 
 // Engine.h
@@ -103,12 +103,31 @@ void Context::AddResponseHandler(HandlerFunc handler);
 ```
 ## Performance
 ### Memory Use
+
 ![image](https://user-images.githubusercontent.com/45586871/170446926-20aa81d0-3006-463b-b4b3-ccf3b7a5c9c2.png)
 
 ### Pressure 
+
 ![image](https://user-images.githubusercontent.com/45586871/170447008-d3248a71-01ef-418a-a83d-c792ced2dd8b.png)
 
 Vodka got a almost 7w req/s. while Nginx is about 1.4w req/s in the same machine.
 It's 5 times that of nginx.
 
 ## Output
+
+![image](https://user-images.githubusercontent.com/45586871/170821461-f754fa9f-4654-4c28-bc68-88270bd9cfcb.png)
+ez to use API for output
+
+```cpp
+template <typename... Args> inline void Debug(std::string_view format, Args... args);
+template <typename... Args> inline void Info (std::string_view format, Args... args);
+template <typename... Args> inline void Warn (std::string_view format, Args... args);
+template <typename... Args> inline void Error(std::string_view format, Args... args);
+```
+
+When build in `Release` version, all `Debug` info will magiclly disappear
+
+![~0 6N21GCZA2%CEJ AQ5VIA](https://user-images.githubusercontent.com/45586871/170821840-220dccf1-126a-4d42-a941-46535c363cca.png)
+![%GSUHFCCK`6B@HHZCJX8I`L](https://user-images.githubusercontent.com/45586871/170821876-46801e71-3180-4bae-b1f7-0a7f1baa4150.png)
+
+
