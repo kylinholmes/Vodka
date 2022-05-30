@@ -72,10 +72,10 @@ struct REST
 struct Route
 {
 	RouteNode*					  Root;
-	static std::shared_ptr<Route> GetInstance()
+	static Route* GetInstance()
 	{
 		static Route r;
-		return std::make_shared<Route>(r);
+		return &r;
 	}
 
 	RouteNode* GetNode(std::string_view pattern);

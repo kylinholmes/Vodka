@@ -23,8 +23,11 @@ struct FileManager {
     std::tuple<char*, int, int, Result> GetFile(std::string_view file);
     // std::tuple<char*, int, int> GetFile(std::string_view file);
 
-    static std::shared_ptr<FileManager> GetInstance() {
+    static FileManager* GetInstance() {
         static FileManager fm;
-        return std::make_shared<FileManager>(fm);
+        return &fm;
+    }
+    ~FileManager(){
+        Debug("File Manager unexcepet destruct\n");
     }
 };

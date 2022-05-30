@@ -183,7 +183,6 @@ void Route::WarpContext(Context& ctx)
 		auto index = MethodIndex(ctx.Method());
 		
 		if (node->ResponseHandler[index]) {
-			DEBUG("{}\n", index);
 			ctx.AddHandlerFunc(node->ResponseHandler[index]);
 		}else if (node->ResponseHandler[Method::ANY] != nullptr) {
 				ctx.AddHandlerFunc(node->ResponseHandler[Method::ANY]);

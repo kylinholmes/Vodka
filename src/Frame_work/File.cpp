@@ -1,5 +1,6 @@
 #include "File.h"
 #include "error.h"
+#include "log.h"
 #include <cstring>
 #include <string>
 
@@ -49,6 +50,8 @@ std::tuple<char*, int, int, Result> FileManager::GetFile(std::string_view f){
   auto file = std::string(f);
   auto res = FilesMap.find(file);
   if (res == FilesMap.end()) {
+    Debug("{}\n", FilesMap.size());
+    Error("File Not Found when get file {}\n", file);
     return std::make_tuple(nullptr, 0, 0, Result::FileNotFound);
   }
   
