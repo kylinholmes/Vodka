@@ -80,7 +80,7 @@ struct Route
 
 	RouteNode* GetNode(std::string_view pattern);
 
-	void WarpContext(Context& ctx);
+	void WrapContext(Context& ctx);
 
 	void Use(HandlerFunc func);
 	void Use(std::list<HandlerFunc> func);

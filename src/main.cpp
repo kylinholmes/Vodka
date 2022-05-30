@@ -53,8 +53,8 @@ int main()
 
 	auto r = Route::GetInstance();
 	r->Use("/", [](Context& ctx) {
-		Info("{} => {}\n", ctx.Method(), ctx.Path());
 		ctx.Next();
+		Info("{} => {}\n", ctx.Method(), ctx.Path());
 	});
 
 	r->Static("assets");

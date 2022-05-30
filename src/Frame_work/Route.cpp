@@ -166,7 +166,7 @@ RouteNode* Route::GetNode(std::string_view pattern)
 		return node;
 }
 
-void Route::WarpContext(Context& ctx)
+void Route::WrapContext(Context& ctx)
 {
 		auto node = Root;
 		ctx.AddHandlerFunc(Root->Handlers);
