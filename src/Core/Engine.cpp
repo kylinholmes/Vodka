@@ -120,9 +120,10 @@ void Engine::End(){
     }
 }
 
-void Engine::SetOption(EngineOption option){
+Engine& Engine::SetOption(EngineOption option){
     this->opt = option;
     this->opt.worker_count = option.worker_count > 32? 32:option.worker_count;
+    return *this;
 }
 
 int Engine::RebootWorker(pid_t pid){

@@ -19,7 +19,7 @@ class Engine {
 	  	Engine():opt(){};
 		void Run();
 		void End();
-		void SetOption(EngineOption);
+		Engine& SetOption(EngineOption);
 
 	  private:
 		void Loop();

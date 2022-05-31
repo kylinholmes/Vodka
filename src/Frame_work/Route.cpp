@@ -140,7 +140,7 @@ HandlerFunc SendFile(std::string file, bool auto_add, size_t offset)
 						switch (res) {
 								case Result::Success:
 										Debug("Get  File {} Success\n", file);
-										ctx.SetBody(c + offset, l);
+										ctx.SetBody(c + offset, l).OK();
 										ctx.SetHeader("Content-Type",
 													  GetFileType(file));
 										ctx.SetHeader("Content-Length",

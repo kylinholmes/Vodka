@@ -6,7 +6,7 @@ void FrameWorkMain(EventPackage *event) {
 
   auto r = Route::GetInstance();
 
-  r->WarpContext(ctx);
+  r->WrapContext(ctx);
 
   ctx.Run();
   

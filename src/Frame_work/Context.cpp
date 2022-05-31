@@ -40,6 +40,7 @@ void Context::Json(json j){
   _res.body = to_string(j);
   SetHeader("Content-Type", "application/json");
   SetHeader("Content-Length", fmt::to_string(_res.body.size()));
+  OK();
 }
 void Context::OK(){
   SetStatus("200", "OK");

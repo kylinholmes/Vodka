@@ -75,7 +75,6 @@ int main()
 				return;
 			}
 		}
-
 		j["status"] = "failed";
 		ctx.Json(j);
 	}, "POST");
@@ -121,8 +120,8 @@ int main()
 
 
 	Engine e;
-	e.SetOption({.listen_port = 8080, .worker_count = 8, .host = "localhost"});
-	e.Run();
+	e.SetOption({.listen_port = 8080, .worker_count = 8, .host = "localhost"})
+	 .Run();
 
 	return 0;
 }
