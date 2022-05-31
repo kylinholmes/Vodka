@@ -2,8 +2,10 @@
 #define _MASTER_H_
 
 #include <liburing.h>
+#include <string_view>
 
 #include "Worker.h"
+#include "toml/toml.h"
 
 const int WORKER_MAX_COUNT = 32;
 
@@ -20,6 +22,7 @@ class Engine {
 		void Run();
 		void End();
 		Engine& SetOption(EngineOption);
+		Engine& Config(std::string_view);
 
 	  private:
 		void Loop();

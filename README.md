@@ -28,10 +28,11 @@ use **vcpkg** to manage C/C++ packages.
 [RTFM](https://github.com/microsoft/vcpkg)
 
 ```bash
-vcpkg install nlohmann-json fmt
+vcpkg install nlohmann-json fmt tinytoml
 ```
 - nolohmann-json: a json library for C++
 - fmt: a fast and elegent output library
+- tinytoml: a tiny TOML parser for parsing `config.toml` file.
 
 set a env variable 
 ```bash

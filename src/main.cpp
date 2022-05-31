@@ -121,6 +121,7 @@ int main()
 
 	Engine e;
 	e.SetOption({.listen_port = 8080, .worker_count = 8, .host = "localhost"})
+	 .Config("config.toml")
 	 .Run();
 
 	return 0;

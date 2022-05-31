@@ -1,5 +1,6 @@
 #include <cstdlib>
 
+#include <fstream>
 #include <stdio.h>
 #include <netinet/in.h>
 #include <string.h>
@@ -125,7 +126,26 @@ Engine& Engine::SetOption(EngineOption option){
     this->opt.worker_count = option.worker_count > 32? 32:option.worker_count;
     return *this;
 }
+Engine& Engine::Config(std::string_view config_file){
+    std::fstream fs(config_file.data(), std::ios::in);
+    toml::ParseResult pr = toml::parse(fs);
+    if (!pr.valid()) {
+        Error("Config File Error: {}\n", pr.errorReason);
+        exit(errno);
+    }
+    const toml::Value& v = pr.value;
+    const toml::Value* port = v.find("port");
+    const toml::Value* worker_count = v.find("worker");
+    const toml::Value* host = v.find("host");
 
+    Debug("workers:{} {}:{}\n", worker_count->as<int>(), host->as<std::string>(),port->as<int>());
+    this->opt = {
+        .listen_port = port->as<int>(),
+        .worker_count = worker_count->as<int>(),
+        .host = host->as<std::string>()
+    };
+    return *this;
+}
 int Engine::RebootWorker(pid_t pid){
     int id = -1,pipefd[2];
     for(int i = 0;i<opt.worker_count;i++){
