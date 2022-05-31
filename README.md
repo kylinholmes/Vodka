@@ -130,6 +130,5 @@ template <typename... Args> inline void Error(std::string_view format, Args... a
 When build in `Release` version, all `Debug` info will magiclly disappear
 
 ![~0 6N21GCZA2%CEJ AQ5VIA](https://user-images.githubusercontent.com/45586871/170821840-220dccf1-126a-4d42-a941-46535c363cca.png)
-![%GSUHFCCK`6B@HHZCJX8I`L](https://user-images.githubusercontent.com/45586871/170821876-46801e71-3180-4bae-b1f7-0a7f1baa4150.png)
 
 
