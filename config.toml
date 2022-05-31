@@ -1,3 +1,4 @@
+[web]
 port = 8080
 host = "localhost"
 worker = 8

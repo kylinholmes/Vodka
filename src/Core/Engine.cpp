@@ -134,9 +134,9 @@ Engine& Engine::Config(std::string_view config_file){
         exit(errno);
     }
     const toml::Value& v = pr.value;
-    const toml::Value* port = v.find("port");
-    const toml::Value* worker_count = v.find("worker");
-    const toml::Value* host = v.find("host");
+    const toml::Value* port = v.find("web.port");
+    const toml::Value* worker_count = v.find("web.worker");
+    const toml::Value* host = v.find("web.host");
 
     Debug("workers:{} {}:{}\n", worker_count->as<int>(), host->as<std::string>(),port->as<int>());
     this->opt = {

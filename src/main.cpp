@@ -96,7 +96,7 @@ int main()
 	}, "POST");
 
 	r->Bind("/query", [&](Context& ctx) {
-		Info("{}\n", ctx._req.headers);
+		Debug("{}\n", ctx._req.headers);
 		json j;
 		if (ctx.Header("Cookie") != "12345") {
 			j["status"] = "failed";
@@ -120,7 +120,8 @@ int main()
 
 
 	Engine e;
-	e.SetOption({.listen_port = 8080, .worker_count = 8, .host = "localhost"})
+	// 8080 8 localhost is default value
+	e.SetOption({.listen_port = 8080, .worker_count = 8, .host = "localhost"}) 
 	 .Config("config.toml")
 	 .Run();
 

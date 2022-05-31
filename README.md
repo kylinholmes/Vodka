@@ -82,6 +82,7 @@ HandlerFunc SendFile(std::string path);
 // Engine.h
 void Engine::Run();
 void Engine::SetOption(EngineOption opt);
+void Engine::Config(std::string_view config);
 
 // Context.h
 // Request Info
