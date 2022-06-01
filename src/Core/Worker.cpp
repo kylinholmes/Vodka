@@ -13,6 +13,7 @@
 #include <chrono>
 #include <thread>
 
+#include "EventPackage.h"
 #include "Worker.h"
 
 void Worker::Loop() {
@@ -60,12 +61,17 @@ void Worker::CompleteEvent(EventPackage* event) {
             uring.AddRead(event, event->m_fd);
             break;
         case EVENT_TYPE_WRITE:
-            uring.addWrite(event, event->m_fd, event->m_buffer, event->len);
+            uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->len - event->body_total_send);
             break;
         case EVENT_TYPE_WRITEV:
             uring.AddWritev(event, event->m_fd, event->ioves, event->iovec_cnt);
             break;
         case EVENT_TYPE_END:
+            event->body_total_send += event->m_res;
+            if(event->body_total_send < event->body_len) {
+                event->m_eventType = EVENT_TYPE_WRITE;
+                break;
+            }
             close(event->m_fd);
             eventPool.FreeObject(event);
             break;

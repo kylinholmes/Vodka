@@ -33,14 +33,12 @@ void SetDefaultHeader(){
 			ctx.SetHeader("Inspired-By", "Fawkes");
 			ctx.SetHeader("Thanks", "Sheey");
 			ctx.SetHeader("Connection", "Keep-Alive");
-		},
-		[](Context& ctx) {
-
-		});
+		}
+	);
 }
 
-int main()
-{
+int main(){
+	
 	using namespace hiberlite;
 	hiberlite::Database db("test.db");
 	db.registerBeanClass<User>();

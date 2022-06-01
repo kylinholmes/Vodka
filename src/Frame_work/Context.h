@@ -30,6 +30,7 @@ struct Context {
     Context& SetHeader(std::string key, std::string value);
     Context& SetBody(std::string_view value);
     Context& SetBody(char* value, size_t len);
+    Context& SetBody(char* value, size_t len, bool copy);
     void Json(json j);
     void OK();
     

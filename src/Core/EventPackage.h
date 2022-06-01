@@ -26,12 +26,15 @@ struct EventPackage {
   int m_fd;
   int m_eventType;
   int m_res;
+  
   char m_buffer[BUFFER_SIZE];
   int len;
   char head[RESPONSER_BUFFER_HEAD_LENGTH];
   int head_len;
   char body[RESPONSER_BUFFER_BODY_LENGTH];
   int body_len;
+  int body_total_send = 0;
+  
   iovec ioves[MAX_IOVE_COUNT];
   int iovec_cnt;
   void *user_data;

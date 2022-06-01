@@ -74,11 +74,11 @@ int Uring::addWrite(EventPackage* event,int sock,char* buf,int len){
     return 0;
 }
 
-int Uring::AddWritev(EventPackage* event,int sock,iovec*iovecs,int iov_cnt){
+int Uring::AddWritev(EventPackage *event, int sock, iovec *iovecs, int iov_cnt){
     event->m_fd = sock;
     event->m_eventType = EVENT_TYPE_WRITEV;
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
-    io_uring_prep_writev(sqe,sock,iovecs,iov_cnt,0);
+    io_uring_prep_writev(sqe, sock, iovecs, iov_cnt, 0);
     io_uring_sqe_set_data(sqe, event);
     io_uring_submit(&ring);
     return 0;

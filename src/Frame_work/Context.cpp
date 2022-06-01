@@ -36,6 +36,7 @@ Context&  Context::SetBody(char *value, size_t len) {
   _res.use_event = true;
   return *this;
 }
+
 void Context::Json(json j){
   _res.body = to_string(j);
   SetHeader("Content-Type", "application/json");
@@ -87,7 +88,7 @@ void Context::WriteEvent() {
     event->ioves[1].iov_len = _res.body.length();
     event->ioves[1].iov_base = &(event->body);
   }
-
+  
   event->iovec_cnt = 2;
   event->m_eventType = EVENT_TYPE_WRITEV;
 }
