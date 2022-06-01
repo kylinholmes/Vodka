@@ -1,0 +1,1 @@
+vcpkg install nlohmann-json fmt tinytoml
