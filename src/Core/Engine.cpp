@@ -50,7 +50,7 @@ void Engine::Run(){
     Debug("{}\n", debug_info);
     server_sock = createServerSocket(port);
     
-    Info("🚀 Start on http://{}:{}\n", opt.host , port);
+    Info("🚀 Start on http://{}:{} with {} workers\n", opt.host , port, opt.worker_count);
     
     uring.InitUring();
 
@@ -138,7 +138,7 @@ Engine& Engine::Config(std::string_view config_file){
     const toml::Value* worker_count = v.find("web.worker");
     const toml::Value* host = v.find("web.host");
 
-    Debug("workers:{} {}:{}\n", worker_count->as<int>(), host->as<std::string>(),port->as<int>());
+    //Debug("workers:{} {}:{}\n", worker_count->as<int>(), host->as<std::string>(),port->as<int>());
     this->opt = {
         .listen_port = port->as<int>(),
         .worker_count = worker_count->as<int>(),

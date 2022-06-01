@@ -35,17 +35,18 @@ void Worker::Loop() {
                 if (event->m_res == 0) {
                     close(event->m_fd);
                     eventPool.FreeObject(event);
-                    // fprintf(stderr, "Empty request!\n");
                     continue;
                 }
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITE:
-                event->m_eventType = EVENT_TYPE_END;
+		event->m_eventType = EVENT_TYPE_END;
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITEV:
-                event->m_eventType = EVENT_TYPE_END;
+		Debug("Loop WriteV {:x}\n", (size_t)(event));
+		Debug("{} {}\n", event->body_total_send , event->body_len);
+		event->m_eventType = EVENT_TYPE_END;
                 CompleteEvent(event);
                 break;
             default:
@@ -57,22 +58,22 @@ void Worker::Loop() {
 void Worker::CompleteEvent(EventPackage* event) {
     ProcessEvent(event);
     switch (event->m_eventType) {
-        case EVENT_TYPE_READ:
-            uring.AddRead(event, event->m_fd);
-            break;
+       // case EVENT_TYPE_READ:
+         //   Debug("Read\n");
+	   // uring.AddRead(event, event->m_fd);
+            //break;
         case EVENT_TYPE_WRITE:
-            uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->len - event->body_total_send);
+            Debug("Write\n");
+	    uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->len - event->body_total_send);
             break;
         case EVENT_TYPE_WRITEV:
+	    Debug("WriteV {:x}\n", (size_t)(event));
             uring.AddWritev(event, event->m_fd, event->ioves, event->iovec_cnt);
             break;
         case EVENT_TYPE_END:
-            event->body_total_send += event->m_res;
-            if(event->body_total_send < event->body_len) {
-                event->m_eventType = EVENT_TYPE_WRITE;
-                break;
-            }
-            close(event->m_fd);
+	    Debug("End {} , {:x}\n", event->m_res, (size_t)(event));
+            event->body_total_send = 0;
+	    close(event->m_fd);
             eventPool.FreeObject(event);
             break;
         default:
