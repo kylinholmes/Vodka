@@ -56,7 +56,7 @@ void Worker::Loop() {
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITEV:
-                event->total_send += event->m_res; //total send
+                event->total_send += event->m_res; // total send
                 Debug("4 WriteV 0x{:X} {} {}\n", (size_t)event, event->total_send ,EVENTLEN(event));
 		        if(event->total_send < EVENTLEN(event)){
                     event->total_send -= event->ioves[0].iov_len; // total_send -= head_len
@@ -76,7 +76,7 @@ void Worker::CompleteEvent(EventPackage* event) {
     ProcessEvent(event);
     switch (event->m_eventType) {
         case EVENT_TYPE_WRITE:
-            Debug("6 Write\n");
+            Debug("6 Write 0x{:X}\n", (char*)(event->ioves[1].iov_base) + event->total_send);
 	        uring.addWrite(event, event->m_fd, (char*)(event->ioves[1].iov_base) + event->total_send, event->ioves[1].iov_len - event->total_send);
             break;
         case EVENT_TYPE_WRITEV:

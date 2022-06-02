@@ -68,7 +68,7 @@ int Uring::addWrite(EventPackage* event,int sock,char* buf,int len){
     event->m_fd = sock;
     event->m_eventType = EVENT_TYPE_WRITE;
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
-    io_uring_prep_write(sqe,sock,event->m_buffer,len,0);
+    io_uring_prep_write(sqe, sock, event->m_buffer, len, 0);
     io_uring_sqe_set_data(sqe, event);
     io_uring_submit(&ring);
     return 0;
