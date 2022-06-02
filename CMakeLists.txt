@@ -43,10 +43,11 @@ target_link_libraries(
     PUBLIC
     uring
 )
+
+# Denpendencies
 add_subdirectory(src/hiberlite)
 target_link_libraries(${PROJECT_NAME} PUBLIC hiberlite)
 
-# Denpendencies
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
@@ -55,7 +56,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
-
 
 find_path(TINYTOML_INCLUDE_DIRS "toml/toml.h")
 target_include_directories(${PROJECT_NAME} PRIVATE ${TINYTOML_INCLUDE_DIRS})
