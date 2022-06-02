@@ -87,14 +87,8 @@ void Context::WriteEvent() {
     memcpy(event->body, _res.body.c_str(), _res.body.length());
     event->ioves[1].iov_len = _res.body.length();
     event->ioves[1].iov_base = &(event->body);
-    event->iovec_cnt = 2;
-  }else if(event->ioves[1].iov_len > 1024 * 50){
-    event->ioves[2].iov_base = (char*) event->ioves[1].iov_base + (1024 * 50);
-    event->ioves[2].iov_len = event->ioves[1].iov_len - (1024 * 50);
-    event->ioves[1].iov_len = 1024 * 50;
-    event->iovec_cnt = 3;
+    
   }
-  
-  
+  event->iovec_cnt = 2;
   event->m_eventType = EVENT_TYPE_WRITEV;
 }
