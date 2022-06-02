@@ -48,8 +48,8 @@ void Worker::Loop() {
                 break;
             case EVENT_TYPE_WRITE:
 		        event->total_send += event->m_res;
-                DEBUG("3 Write 0x{:X} {} {}\n", (size_t)event, event->total_send, EVENTLEN(event));
-                if(event->total_send < EVENTLEN(event))
+                DEBUG("3 Write 0x{:X} {} {}\n", (size_t)event, event->total_send, event->ioves[1].iov_len);
+                if(event->total_send < event->ioves[1].iov_len)
                     event->m_eventType = EVENT_TYPE_WRITE;
                 else 
                     event->m_eventType = EVENT_TYPE_END;
