@@ -20,7 +20,7 @@ void ProcessEvent(EventPackage *event) {
     FrameWorkMain(event);
     break;
   default:
-    event->m_eventType = EVENT_TYPE_END;
+    // event->m_eventType = EVENT_TYPE_END;
     break;
   }
 }
