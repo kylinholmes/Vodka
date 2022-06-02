@@ -1,4 +1,5 @@
 #include "Framework.h"
+#include "EventPackage.h"
 
 
 void FrameWorkMain(EventPackage *event) {
@@ -19,8 +20,10 @@ void ProcessEvent(EventPackage *event) {
     event->user_data = 0;
     FrameWorkMain(event);
     break;
+  case EVENT_TYPE_WRITE:
+    break;
   default:
-    // event->m_eventType = EVENT_TYPE_END;
+    event->m_eventType = EVENT_TYPE_END;
     break;
   }
 }
