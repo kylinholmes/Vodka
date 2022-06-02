@@ -1,4 +1,4 @@
 [web]
 port = 8080
-host = "43.128.20.186"
+host = "localhost"
 worker = 1

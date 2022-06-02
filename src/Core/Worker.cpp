@@ -15,11 +15,16 @@
 
 #include "EventPackage.h"
 #include "Worker.h"
+#include "log.h"
+
+
+#define EVENTLEN(event) (size_t)(event->ioves[1].iov_len + event->ioves[0].iov_len)
 
 void Worker::Loop() {
     EventPackage *event, *temp;
     while (1) {
         event = uring.WaitEvent();
+        Debug("0 Wait 0x{:X}\n", (size_t)event);
         switch (event->m_eventType) {
             case EVENT_TYPE_RECVMSG:
                 if (event->m_res == 0 || event->m_res == -1)
@@ -30,6 +35,7 @@ void Worker::Loop() {
                 temp->m_eventType = EVENT_TYPE_READ;
                 uring.AddRead(temp, temp->m_fd);
                 uring.AddRecvSocketFd(&event_for_recvmsg, m_handle.pipefd);
+                Debug("1 AddRead 0x{:X}\n", (size_t)temp);
                 break;
             case EVENT_TYPE_READ:
                 if (event->m_res == 0) {
@@ -37,16 +43,26 @@ void Worker::Loop() {
                     eventPool.FreeObject(event);
                     continue;
                 }
+                Debug("2 Read 0x{:X}\n", (size_t)event);
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITE:
-		event->m_eventType = EVENT_TYPE_END;
+                DEBUG("3 Write 0x{:X}", (size_t)event);
+		        event->body_total_send += event->m_res;
+                if(event->body_total_send < EVENTLEN(event))
+                    event->m_eventType = EVENT_TYPE_WRITE;
+                else 
+                    event->m_eventType = EVENT_TYPE_END;
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITEV:
-		Debug("Loop WriteV {:x}\n", (size_t)(event));
-		Debug("{} {}\n", event->body_total_send , event->body_len);
-		event->m_eventType = EVENT_TYPE_END;
+                event->body_total_send += event->m_res;
+                Debug("4 WriteV 0x{:X} {} {}\n", (size_t)event, event->body_total_send ,EVENTLEN(event));
+		        if(event->body_total_send < EVENTLEN(event)){
+                    event->m_eventType = EVENT_TYPE_WRITE;
+                } else {
+                    event->m_eventType = EVENT_TYPE_END;
+                }
                 CompleteEvent(event);
                 break;
             default:
@@ -58,22 +74,21 @@ void Worker::Loop() {
 void Worker::CompleteEvent(EventPackage* event) {
     ProcessEvent(event);
     switch (event->m_eventType) {
-       // case EVENT_TYPE_READ:
-         //   Debug("Read\n");
-	   // uring.AddRead(event, event->m_fd);
-            //break;
+        case EVENT_TYPE_READ:
+            uring.AddRead(event, event->m_fd);
+            break;
         case EVENT_TYPE_WRITE:
-            Debug("Write\n");
-	    uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->len - event->body_total_send);
+            Debug("6 Write\n");
+	        uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->ioves[1].iov_len - event->body_total_send);
             break;
         case EVENT_TYPE_WRITEV:
-	    Debug("WriteV {:x}\n", (size_t)(event));
+	        Debug("7 WriteV {:X}\n", (size_t)(event));
             uring.AddWritev(event, event->m_fd, event->ioves, event->iovec_cnt);
             break;
         case EVENT_TYPE_END:
-	    Debug("End {} , {:x}\n", event->m_res, (size_t)(event));
+	        Debug("8 End {} , {:X}\n", event->m_res, (size_t)(event));
             event->body_total_send = 0;
-	    close(event->m_fd);
+	        close(event->m_fd);
             eventPool.FreeObject(event);
             break;
         default:
