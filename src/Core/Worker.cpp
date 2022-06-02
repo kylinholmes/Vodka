@@ -58,12 +58,12 @@ void Worker::Loop() {
             case EVENT_TYPE_WRITEV:
                 event->total_send += event->m_res; // total send
                 Debug("4 WriteV 0x{:X} {} {}\n", (size_t)event, event->total_send ,EVENTLEN(event));
-		        if(event->total_send < EVENTLEN(event)){
-                    event->total_send -= event->ioves[0].iov_len; // total_send -= head_len
-                    event->m_eventType = EVENT_TYPE_WRITE;
-                } else {
+		        // if(event->total_send < EVENTLEN(event)){
+                //     event->total_send -= event->ioves[0].iov_len; // total_send -= head_len
+                //     event->m_eventType = EVENT_TYPE_WRITE;
+                // } else {
                     event->m_eventType = EVENT_TYPE_END;
-                }
+                // }
                 CompleteEvent(event);
                 break;
             default:
