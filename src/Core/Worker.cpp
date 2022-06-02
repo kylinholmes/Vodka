@@ -47,7 +47,7 @@ void Worker::Loop() {
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITE:
-                DEBUG("3 Write 0x{:X}", (size_t)event);
+                DEBUG("3 Write 0x{:X} {} {}\n", (size_t)event, event->body_total_send, EVENTLEN(event));
 		        event->body_total_send += event->m_res;
                 if(event->body_total_send < EVENTLEN(event))
                     event->m_eventType = EVENT_TYPE_WRITE;
@@ -74,9 +74,9 @@ void Worker::Loop() {
 void Worker::CompleteEvent(EventPackage* event) {
     ProcessEvent(event);
     switch (event->m_eventType) {
-        case EVENT_TYPE_READ:
-            uring.AddRead(event, event->m_fd);
-            break;
+        // case EVENT_TYPE_READ:
+        //     uring.AddRead(event, event->m_fd);
+        //     break;
         case EVENT_TYPE_WRITE:
             Debug("6 Write\n");
 	        uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->ioves[1].iov_len - event->body_total_send);
