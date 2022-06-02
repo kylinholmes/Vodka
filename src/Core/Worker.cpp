@@ -47,18 +47,18 @@ void Worker::Loop() {
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITE:
-                DEBUG("3 Write 0x{:X} {} {}\n", (size_t)event, event->body_total_send, EVENTLEN(event));
-		        event->body_total_send += event->m_res;
-                if(event->body_total_send < EVENTLEN(event))
+                DEBUG("3 Write 0x{:X} {} {}\n", (size_t)event, event->total_send, EVENTLEN(event));
+		        event->total_send += event->m_res;
+                if(event->total_send < EVENTLEN(event))
                     event->m_eventType = EVENT_TYPE_WRITE;
                 else 
                     event->m_eventType = EVENT_TYPE_END;
                 CompleteEvent(event);
                 break;
             case EVENT_TYPE_WRITEV:
-                event->body_total_send += event->m_res;
-                Debug("4 WriteV 0x{:X} {} {}\n", (size_t)event, event->body_total_send ,EVENTLEN(event));
-		        if(event->body_total_send < EVENTLEN(event)){
+                event->total_send += event->m_res;
+                Debug("4 WriteV 0x{:X} {} {}\n", (size_t)event, event->total_send ,EVENTLEN(event));
+		        if(event->total_send < EVENTLEN(event)){
                     event->m_eventType = EVENT_TYPE_WRITE;
                 } else {
                     event->m_eventType = EVENT_TYPE_END;
@@ -79,7 +79,7 @@ void Worker::CompleteEvent(EventPackage* event) {
         //     break;
         case EVENT_TYPE_WRITE:
             Debug("6 Write\n");
-	        uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->body_total_send, event->ioves[1].iov_len - event->body_total_send);
+	        uring.addWrite(event, event->m_fd, (char*)event->ioves[1].iov_base + event->total_send, EVENTLEN(event) - event->total_send);
             break;
         case EVENT_TYPE_WRITEV:
 	        Debug("7 WriteV {:X}\n", (size_t)(event));
@@ -87,7 +87,7 @@ void Worker::CompleteEvent(EventPackage* event) {
             break;
         case EVENT_TYPE_END:
 	        Debug("8 End {} , {:X}\n", event->m_res, (size_t)(event));
-            event->body_total_send = 0;
+            event->total_send = 0;
 	        close(event->m_fd);
             eventPool.FreeObject(event);
             break;

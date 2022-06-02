@@ -33,7 +33,7 @@ struct EventPackage {
   int head_len;
   char body[RESPONSER_BUFFER_BODY_LENGTH];
   int body_len;
-  int body_total_send = 0;
+  int total_send = 0;
   
   iovec ioves[MAX_IOVE_COUNT];
   int iovec_cnt;
