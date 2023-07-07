@@ -16,9 +16,9 @@ set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_CMAKE}
 set(CMAKE_EXPORT_COMPILE_COMMANDS On)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-terminate -Wno-return-local-addr")
-file(GLOB CORE "src/Core/*.cpp")
-file(GLOB FRAME_WORK "src/Frame_work/*.cpp")
-file(GLOB RENDER "src/Render/*.cpp")
+file(GLOB CORE "src/core/*.cpp")
+file(GLOB FRAME_WORK "src/frame_work/*.cpp")
+file(GLOB RENDER "src/render/*.cpp")
 
 set(
     SOURCE 
@@ -32,10 +32,9 @@ project( Vokda )
 add_executable( ${PROJECT_NAME}  ${SOURCE})
 
 include_directories(
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Frame_work
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Render
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/hiberlite/include
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/frame_work
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/render
 )
 
 target_link_libraries(
@@ -43,8 +42,8 @@ target_link_libraries(
     PUBLIC
     uring
 )
-add_subdirectory(src/hiberlite)
-target_link_libraries(${PROJECT_NAME} PUBLIC hiberlite)
+# add_subdirectory(src/hiberlite)
+# target_link_libraries(${PROJECT_NAME} PUBLIC hiberlite)
 
 # Denpendencies
 find_package(Threads REQUIRED)
