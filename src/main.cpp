@@ -6,8 +6,8 @@ using namespace std;
 
 
 int main() {
-	auto &r = *Route::GetInstance();
-	r.Use(
+	auto r = Route::GetInstance();
+	r->Use(
 		"/",
 		[](Context& ctx) {
 			ctx.SetHeader("Server", "Kylin's Vodka");
@@ -20,12 +20,12 @@ int main() {
 	);
 
 	
-	r.Use("/", [](Context& ctx) {
+	r->Use("/", [](Context& ctx) {
 		ctx.Next();
 		Info("{} => {}\n", ctx.Method(), ctx.Path());
 	});
 
-	r.Static("assets");
+	r->Static("assets");
 
 	auto e = Engine {
 		Option{
