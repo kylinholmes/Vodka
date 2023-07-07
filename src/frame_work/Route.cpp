@@ -5,8 +5,7 @@
 #include <memory>
 
 std::list<std::string_view>
-split(std::string_view str, char delimiter, size_t offset)
-{
+split(std::string_view str, char delimiter, size_t offset) {
 		std::list<std::string_view> result;
 		auto						i = offset, j = offset;
 		for (; i < str.size(); i++) {
@@ -20,8 +19,7 @@ split(std::string_view str, char delimiter, size_t offset)
 		return result;
 }
 
-std::string_view operator-(std::string_view path, std::string_view prefix)
-{
+std::string_view operator-(std::string_view path, std::string_view prefix) {
 		if (prefix.length() > path.length()) {
 				throw std::runtime_error("path less than prefix");
 		}
@@ -31,9 +29,9 @@ std::string_view operator-(std::string_view path, std::string_view prefix)
 		}
 		return {};
 }
-void GetAllFiles(std::string									 BasePath,
-				 std::list<std::pair<std::string, std::string>>& list)
-{
+
+void GetAllFiles(std::string BasePath,
+				 std::list<std::pair<std::string, std::string>>& list) {
 		DIR*		   dir;
 		struct dirent* ptr;
 		if ((dir = opendir(BasePath.data())) == NULL) {
@@ -56,8 +54,7 @@ void GetAllFiles(std::string									 BasePath,
 		}
 		closedir(dir);
 }
-RouteNode* RouteNode::GetChild(std::string_view pattern, bool create)
-{
+RouteNode* RouteNode::GetChild(std::string_view pattern, bool create) {
 		for (auto iter = Children.begin(); iter != Children.end(); ++iter) {
 				if (!(*iter)->accurate || (*iter)->Pattern == pattern) {
 						return *iter;
@@ -76,8 +73,7 @@ RouteNode* RouteNode::GetChild(std::string_view pattern, bool create)
 		return c;
 }
 
-constexpr size_t MethodIndex(std::string_view Method)
-{
+constexpr size_t MethodIndex(std::string_view Method) {
 		if (Method.empty())
 				return 0;
 		if (Method == "GET")
@@ -101,22 +97,20 @@ constexpr size_t MethodIndex(std::string_view Method)
 		return 0;
 }
 
-void RouteNode::AddResponseHandler(std::string method, HandlerFunc handler)
-{
-		auto index			   = MethodIndex(method);
+void RouteNode::AddResponseHandler(std::string method, HandlerFunc handler) {
+		auto index= MethodIndex(method);
 		ResponseHandler[index] = handler;
 }
-void RouteNode::AddHandler(HandlerFunc handler)
-{
+
+void RouteNode::AddHandler(HandlerFunc handler) {
 		Handlers.push_back(handler);
 }
-void RouteNode::AddHandler(std::list<HandlerFunc> handlers)
-{
+
+void RouteNode::AddHandler(std::list<HandlerFunc> handlers) {
 		Handlers.splice(Handlers.end(), handlers);
 }
 
-HandlerFunc SendFile(std::string file, bool auto_add, size_t offset)
-{
+HandlerFunc SendFile(std::string file, bool auto_add, size_t offset) {
 		auto fm = FileManager::GetInstance();
 		if (auto_add) {
 				auto res = fm->AddFile(file);
@@ -157,8 +151,7 @@ HandlerFunc SendFile(std::string file, bool auto_add, size_t offset)
 		};
 }
 
-RouteNode* Route::GetNode(std::string_view pattern)
-{
+RouteNode* Route::GetNode(std::string_view pattern) {
 		auto node = Root;
 		for (auto s : split(pattern, '/')) {
 				node = node->GetChild(s);
@@ -166,8 +159,7 @@ RouteNode* Route::GetNode(std::string_view pattern)
 		return node;
 }
 
-void Route::WrapContext(Context& ctx)
-{
+void Route::WrapContext(Context& ctx) {
 		auto node = Root;
 		ctx.AddHandlerFunc(Root->Handlers);
 		for (auto s : split(ctx.Path())) {
@@ -194,8 +186,7 @@ void Route::WrapContext(Context& ctx)
 		}
 }
 
-void Route::Static(std::string_view dir)
-{
+void Route::Static(std::string_view dir) {
 		using namespace std;
 		using namespace fmt;
 		Debug("Route::Static Mapping Path\n");
@@ -217,18 +208,15 @@ void Route::Static(std::string_view dir)
 		}
 }
 
-void Route::Use(HandlerFunc func)
-{
+void Route::Use(HandlerFunc func) {
 		Root->AddHandler(func);
 }
-void Route::Use(std::list<HandlerFunc> func)
-{
+void Route::Use(std::list<HandlerFunc> func) {
 		Root->AddHandler(func);
 }
 
-void Route::Bind(std::string_view pattern, HandlerFunc func, std::string Method)
-{
-		auto node					 = GetNode(pattern);
-		auto index					 = MethodIndex(Method);
+void Route::Bind(std::string_view pattern, HandlerFunc func, std::string Method) {
+		auto node= GetNode(pattern);
+		auto index= MethodIndex(Method);
 		node->ResponseHandler[index] = func;
 }

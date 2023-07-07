@@ -9,7 +9,7 @@
 
 enum struct LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3, QUIET = 4 };
 
-#ifdef DEBUG_MODE 
+#ifdef DEBUG_MOD 
 #define Debug(__FORMAT__, __ARGS__...) DEBUG(__FORMAT__, ##__ARGS__)
 #else
 #define Debug(__FORMAT__, __ARGS__...)

@@ -2,78 +2,93 @@
 #include <fmt/format.h>
 #include <sys/types.h>
 
-std::string_view Context::Path() { return _req.url.path; }
+std::string_view Context::Path() { return req.url.path; }
 
-std::string_view Context::Method() { return _req.method; }
+std::string_view Context::Method() { return req.method; }
 
 std::string_view Context::Params(std::string_view key) {
-  return _req.url.params[key];
+  return req.url.params[key];
 }
 
 std::string_view Context::Header(std::string_view key) {
-  return _req.headers[key];
+  return req.headers[key];
 }
 
-std::string_view Context::Body() { return _req.body; }
+std::string_view Context::Body() { 
+  return req.body; 
+}
 Context& Context::SetHeader(std::string key, std::string value) {
-  // _res.headers[key] = value;
-  _res.headers.push_back(std::make_pair(key, value));
+  resp.headers.push_back(std::make_pair(key, value));
   return *this;
 }
 
 void Context::SetStatus(std::string code, std::string msg) {
-  _res.status_code = code;
-  _res.status_message = msg;
+  resp.status_code = code;
+  resp.status_message = msg;
 }
+
 void Context::SetStatus(u_int32_t code, std::string msg) {
-  _res.status_code = std::to_string(code);
-  _res.status_message = msg;
+  resp.status_code = std::to_string(code);
+  resp.status_message = msg;
 }
-Context&  Context::SetBody(std::string_view value) { _res.body = value; return *this;}
+
+Context&  Context::SetBody(std::string_view value) { 
+    resp.body = value; 
+    return *this;
+}
+
 Context&  Context::SetBody(char *value, size_t len) {
   event->ioves[1].iov_len = len;
   event->ioves[1].iov_base = value;
-  _res.use_event = true;
+  resp.use_event = true;
   return *this;
 }
+
 void Context::Json(json j){
-  _res.body = to_string(j);
+  resp.body = to_string(j);
   SetHeader("Content-Type", "application/json");
-  SetHeader("Content-Length", fmt::to_string(_res.body.size()));
+  SetHeader("Content-Length", fmt::to_string(resp.body.size()));
   OK();
 }
+
 void Context::OK(){
   SetStatus("200", "OK");
 }
+
 void Context::Run() {
-  _iter = _handler_list.begin();
+  handler_iter = handler_list.begin();
   this->Next();
   // _response_handler(*this);
 }
+
 void Context::Next() {
-  for (; _iter != _handler_list.end();) {
-    if (_abort)
+  for (; handler_iter != handler_list.end();) {
+    if (is_abort)
       return;
-    (*_iter++)(*this);
+    (*handler_iter++)(*this);
   }
 }
 
-void Context::Abort() { _abort = true; }
+void Context::Abort() { 
+  is_abort = true; 
+}
 
 void Context::AddHandlerFunc(HandlerFunc func) {
-  _handler_list.push_back(func);
+  handler_list.push_back(func);
 }
 
 void Context::AddHandlerFunc(std::list<HandlerFunc> funcs) {
-  _handler_list.splice(_handler_list.end(), funcs);
+  handler_list.splice(handler_list.end(), funcs);
 }
-// void Context::AddResponseHandler(HandlerFunc func) { _response_handler = func; }
-size_t Context::HandlerSize() { return _handler_list.size(); }
-void Context::WriteEvent() {
-  std::string tmp = (_res.version + " " + _res.status_code + " " +
-                     _res.status_message + "\r\n");
 
-  for (auto &h : _res.headers) {
+size_t Context::HandlerSize() { 
+  return handler_list.size(); 
+}
+void Context::WriteEvent() {
+  std::string tmp = (resp.version + " " + resp.status_code + " " +
+                     resp.status_message + "\r\n");
+
+  for (auto &h : resp.headers) {
     tmp += (h.first + ": " + h.second + "\r\n");
   }
   tmp += "\r\n";
@@ -82,9 +97,9 @@ void Context::WriteEvent() {
   event->ioves[0].iov_base = &(event->head);
   event->ioves[0].iov_len = tmp.length();
 
-  if (!_res.use_event) {
-    memcpy(event->body, _res.body.c_str(), _res.body.length());
-    event->ioves[1].iov_len = _res.body.length();
+  if (!resp.use_event) {
+    memcpy(event->body, resp.body.c_str(), resp.body.length());
+    event->ioves[1].iov_len = resp.body.length();
     event->ioves[1].iov_base = &(event->body);
   }
 

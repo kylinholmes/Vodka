@@ -1,6 +1,7 @@
 #ifndef _WORKPROCESS_H_
 #define _WORKPROCESS_H_
 
+#include <cstdint>
 #include <liburing.h>
 #include <netinet/in.h>
 
@@ -20,7 +21,7 @@ private:
     void CompleteEvent(EventPackage* event);
 
 private:
-    int server_sock;
+    int32_t server_sock;
     Uring uring;
     EventPackage event_for_accept, event_for_recvmsg;
     EventPackagePool eventPool;

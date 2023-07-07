@@ -84,7 +84,6 @@ void worker_sigint_handler(int signo) {
 void Worker::Init(ProcessHandle handle) {
     worker_instance = this;
     signal(SIGKILL, worker_sigint_handler);
-    // onInitWorker();
     uring.InitUring();
     m_handle = handle;
     eventPool.Init();
@@ -92,7 +91,6 @@ void Worker::Init(ProcessHandle handle) {
 }
 
 void Worker::End() {
-    // onEndWorker();
     uring.End();
     eventPool.End();
 }

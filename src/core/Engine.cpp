@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <cstdlib>
 
 #include <fstream>
@@ -37,7 +38,7 @@ const char* debug_info = R"(
     Don't worry, ALL Debug info will auto clean up in release version
 )";
 Engine *master_instance;
-void master_sigint_handler(int signo) {
+void master_sigint_handler(int32_t signo) {
     printf("Engine is Shutting down.\n");
     master_instance->End();
     exit(0);
@@ -54,12 +55,12 @@ void Engine::Run(){
     
     uring.InitUring();
 
-    int id = 0,pipefd[2];
+    int32_t id = 0,pipefd[2];
     for(id = 0;id<opt.worker_count;id++){
         childHandle[id].id=id;
         socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
         if((childHandle[id].pid = fork()) == 0) {
-            for(int i = 0;i<id;i++)
+            for(int32_t i = 0;i<id;i++)
                close(childHandle[i].pipefd);
             close(pipefd[1]);
             childHandle[id].pipefd = pipefd[0];
@@ -85,7 +86,7 @@ void Engine::Run(){
 
 void Engine::Loop(){
     EventPackage *event;
-    int sockFd,sele,stat,id;
+    int32_t sockFd,sele,stat,id;
     pid_t wpid;
     while (1){
         wpid =waitpid(-1, &stat,WNOHANG);
@@ -115,7 +116,7 @@ void Engine::Loop(){
 
 void Engine::End(){
     uring.End();
-    for(int i = 0;i<opt.worker_count;i++){
+    for(int32_t i = 0;i<opt.worker_count;i++){
         close(childHandle[i].pipefd);
         kill(childHandle[i].pid,SIGKILL);
     }
@@ -126,6 +127,7 @@ Engine& Engine::SetOption(EngineOption option){
     this->opt.worker_count = option.worker_count > 32? 32:option.worker_count;
     return *this;
 }
+
 Engine& Engine::Config(std::string_view config_file){
     std::fstream fs(config_file.data(), std::ios::in);
     toml::ParseResult pr = toml::parse(fs);
@@ -138,17 +140,18 @@ Engine& Engine::Config(std::string_view config_file){
     const toml::Value* worker_count = v.find("web.worker");
     const toml::Value* host = v.find("web.host");
 
-    Debug("workers:{} {}:{}\n", worker_count->as<int>(), host->as<std::string>(),port->as<int>());
+    Debug("workers:{} {}:{}\n", worker_count->as<int32_t>(), host->as<std::string>(),port->as<int32_t>());
     this->opt = {
-        .listen_port = port->as<int>(),
-        .worker_count = worker_count->as<int>(),
+        .listen_port = port->as<int32_t>(),
+        .worker_count = worker_count->as<int32_t>(),
         .host = host->as<std::string>()
     };
     return *this;
 }
-int Engine::RebootWorker(pid_t pid){
-    int id = -1,pipefd[2];
-    for(int i = 0;i<opt.worker_count;i++){
+
+int32_t Engine::RebootWorker(pid_t pid){
+    int32_t id = -1,pipefd[2];
+    for(int32_t i = 0;i<opt.worker_count;i++){
         if(childHandle[i].pid == pid){
             id = i;
             break;
@@ -162,7 +165,7 @@ int Engine::RebootWorker(pid_t pid){
     socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
     if((childHandle[id].pid = fork()) == 0) {
         close(pipefd[1]);
-        for(int i = 0;i<opt.worker_count;i++)
+        for(int32_t i = 0;i<opt.worker_count;i++)
             if(id!=i)close(childHandle[i].pipefd);
         childHandle[id].pipefd = pipefd[0];
         return id;

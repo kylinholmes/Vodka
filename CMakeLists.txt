@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE "Debug")
-set(VODKA_VERSION 0.14)
+set(VODKA_VERSION 0.15)
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     add_definitions(-DDEBUG_MODE)
 endif()
@@ -18,13 +18,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS On)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-terminate -Wno-return-local-addr")
 file(GLOB CORE "src/core/*.cpp")
 file(GLOB FRAME_WORK "src/frame_work/*.cpp")
-file(GLOB RENDER "src/render/*.cpp")
+file(GLOB RENDER "src/utils/*.cpp")
 
 set(
     SOURCE 
     ${CORE}
     ${FRAME_WORK}
-    ${RENDER}
+    ${UTILS}
     src/main.cpp
 )
 
@@ -34,7 +34,7 @@ add_executable( ${PROJECT_NAME}  ${SOURCE})
 include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/frame_work
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/render
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
 )
 
 target_link_libraries(

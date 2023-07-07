@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include "EventPackage.h"
 #include "http.h"
-#include "Render.h"
+#include "utils.h"
 
 struct Context {
     using Request = HTTP::Request;
@@ -14,7 +14,7 @@ struct Context {
 
     Context() : Context(nullptr, nullptr){};
     Context(const char* s, EventPackage *e)
-        : _req(s), _res(), event(e), _handler_list(), _iter(){};
+        : req(s), resp(), event(e), handler_list(), handler_iter(){};
 
     
     std::string_view IP();  // TODO
@@ -39,19 +39,18 @@ struct Context {
     void WriteEvent();
     void AddHandlerFunc(HandlerFunc func);
     void AddHandlerFunc(std::list<HandlerFunc> funcs);
-    // void AddResponseHandler(HandlerFunc func);
+    
     size_t HandlerSize();
 
-    Request _req;
-    Response _res;
+    Request req;
+    Response resp;
 
-    //    private:
     EventPackage *event;
-    std::list<HandlerFunc> _handler_list;
-    // HandlerFunc _response_handler;
-    std::list<HandlerFunc>::iterator _iter;
-    std::string _ip;
-    bool _abort = false;
+    std::list<HandlerFunc> handler_list;
+    
+    std::list<HandlerFunc>::iterator handler_iter;
+    std::string src_ip;
+    bool is_abort = false;
 };
 
 using HandlerFunc = std::function<void(Context& ctx)>;

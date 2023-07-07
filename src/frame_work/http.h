@@ -27,7 +27,7 @@ struct Request {
     URI url;
     std::string_view body;
 
-   private:
+private:
     int match_key(const char* s, int offset = 0);
     int match_value(const char* s, int offset = 0);
 };
@@ -41,7 +41,6 @@ struct Response {
     std::string version;
     std::string status_code;
     std::string status_message;
-    // std::unordered_map<std::string, std::string> headers;
     std::list<std::pair<std::string, std::string>> headers;
     std::string body;
 };  // struct Response
