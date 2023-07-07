@@ -29,8 +29,8 @@ int main() {
 
 	auto e = Engine {
 		Option{
-			.listen_port = 8080,
-			.worker_count = 8,
+			.listen_port = 7070,
+			.worker_count = 10,
 			.host = "localhost"
 		}
 	};

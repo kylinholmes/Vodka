@@ -44,20 +44,36 @@ void master_sigint_handler(int32_t signo) {
     exit(0);
 }
 
+void Engine::CheckOption() {
+    bool is_ok = true;
+    if ( opt.listen_port < 0 || opt.listen_port > 65535 ) {
+        Error("option.listen_port is out of range 0..65535 : {}", opt.listen_port);
+        is_ok = false;
+    }
+    if ( opt.worker_count < 0 || opt.worker_count > WORKER_MAX_COUNT ) {
+        Error("option.worker_count is out of range 0..{}: {}", WORKER_MAX_COUNT, opt.worker_count);
+        is_ok = false;
+    }
+
+    if (!is_ok) 
+    exit(1);
+}
+
 void Engine::Run(){
+    CheckOption();
     auto port = opt.listen_port;
     
     fmt::print(fmt::fg(fmt::color::dark_sea_green) ,LOGO, VODKA_VERSION);
     Debug("{}\n", debug_info);
-    server_sock = createServerSocket(port);
+    server_sock = CreateServerSocket(port);
     
     Info("🚀 Start on http://{}:{}\n", opt.host , port);
     
     uring.InitUring();
 
     int32_t id = 0,pipefd[2];
-    for(id = 0;id<opt.worker_count;id++){
-        childHandle[id].id=id;
+    for(id = 0; id < opt.worker_count; id++){
+        childHandle[id].id = id;
         socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
         if((childHandle[id].pid = fork()) == 0) {
             for(int32_t i = 0;i<id;i++)
@@ -67,15 +83,14 @@ void Engine::Run(){
             break;
         }
         close(pipefd[0]);
-        childHandle[id].pipefd=pipefd[1];
+        childHandle[id].pipefd = pipefd[1];
     }
     
-    if(id!=opt.worker_count){
+    if(id != opt.worker_count){
         Worker worker;
         worker.Init(childHandle[id]);
         worker.Loop();
-    }
-    else {
+    } else {
         master_instance = this;
         signal(SIGKILL, master_sigint_handler);
         uring.AddAccept(&event_for_accept,server_sock,
@@ -86,26 +101,29 @@ void Engine::Run(){
 
 void Engine::Loop(){
     EventPackage *event;
-    int32_t sockFd,sele,stat,id;
+    int32_t sock_fd, child_selector, stat, id;
     pid_t wpid;
     while (1){
-        wpid =waitpid(-1, &stat,WNOHANG);
-        if(wpid!=0 && wpid!=-1){//此时有worker异常退出
+        wpid = waitpid(-1, &stat,WNOHANG);
+        if(wpid != 0 && wpid != -1){//此时有worker异常退出
             id = RebootWorker(wpid);
-            if(id != -1)break;
+            if(id != -1) {
+                Error("Reboot Worker Error");
+                break;
+            }
         }
         event = uring.WaitEvent();
         switch (event->m_eventType) {
-        case EVENT_TYPE_ACCEPT:
-            sockFd = event->m_res;
-            uring.AddAccept(&event_for_accept,server_sock,
-                &client_addr,&client_addr_len);
-            sele = rand()%opt.worker_count;
-            send_fd(childHandle[sele].pipefd,sockFd);
-            close(sockFd);
-            //这里异步地发送会导致短时间过多的fd，导致崩溃;所以必须同步发送，并及时关闭socket
-            break;
-        default: break;
+            case EVENT_TYPE_ACCEPT:
+                sock_fd = event->m_res;
+                uring.AddAccept(&event_for_accept,server_sock,
+                    &client_addr,&client_addr_len);
+                child_selector = rand() % opt.worker_count;
+                send_fd(childHandle[child_selector].pipefd,sock_fd);
+                close(sock_fd);
+                //这里异步地发送会导致短时间过多的fd，导致崩溃;所以必须同步发送，并及时关闭socket
+                break;
+            default: break;
         }
     }
     //退化为工作进程
@@ -116,7 +134,7 @@ void Engine::Loop(){
 
 void Engine::End(){
     uring.End();
-    for(int32_t i = 0;i<opt.worker_count;i++){
+    for(int32_t i = 0;i < opt.worker_count; i++){
         close(childHandle[i].pipefd);
         kill(childHandle[i].pid,SIGKILL);
     }
@@ -124,7 +142,7 @@ void Engine::End(){
 
 Engine& Engine::SetOption(EngineOption option){
     this->opt = option;
-    this->opt.worker_count = option.worker_count > 32? 32:option.worker_count;
+    this->opt.worker_count = option.worker_count > 32 ? 32 : option.worker_count;
     return *this;
 }
 
@@ -157,11 +175,12 @@ int32_t Engine::RebootWorker(pid_t pid){
             break;
         }
     }
-    if(id == -1) return -1;
+    if(id == -1) 
+        return -1;
     close(childHandle[id].pipefd);
 
-    Warn("Worker end pid: {} id: {}\n",pid,id);
-    childHandle[id].id=id;
+    Warn("Worker end pid: {} id: {}\n", pid, id);
+    childHandle[id].id = id;
     socketpair(PF_UNIX,SOCK_DGRAM,0,pipefd);
     if((childHandle[id].pid = fork()) == 0) {
         close(pipefd[1]);

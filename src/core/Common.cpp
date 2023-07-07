@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <log.h>
 
-int createServerSocket(int port){
+int CreateServerSocket(int port){
     int sock;
     struct sockaddr_in srv_addr;
 

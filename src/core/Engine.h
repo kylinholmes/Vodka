@@ -11,8 +11,8 @@
 const int WORKER_MAX_COUNT = 32;
 
 struct EngineOption{
-	int listen_port;
-	int worker_count;
+	int32_t listen_port;
+	int32_t worker_count;
 	std::string host;
 };
 using Option = EngineOption;
@@ -33,6 +33,7 @@ struct Engine {
 private:
 	void Loop();
 	int	 RebootWorker(pid_t pid);
+	void CheckOption();
 
 	int32_t			   server_sock;
 	Uring			   uring;

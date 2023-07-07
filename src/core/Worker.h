@@ -12,9 +12,7 @@
 class Worker{
 public:
     void Init(ProcessHandle handle);
-
     void End();
-
     void Loop();
 
 private:
@@ -31,9 +29,5 @@ private:
 };
 
 void ProcessEvent(EventPackage* event);
-
-// void onInitWorker();
-
-// void onEndWorker();
 
 #endif
